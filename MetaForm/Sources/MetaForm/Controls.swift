@@ -61,20 +61,20 @@ class MFLabel: MFControl {
         super.init(parent: parent, controlType: MetaFormControlType.Label, name: name)
     }
 
-    func isValid(form: MetaForm, updateStatus: Bool = true) -> Bool {
+    override func isValid(form: MetaForm, updateStatus: Bool = true) -> Bool {
         return true;
     }
 }
 
 class MFHtmlTextControl: MFControl {
-    var html: string;
+    var html: String;
 
     init(parent: MFQuestion, name: String, html: String) {
         self.html = html
         super.init(parent: parent, controlType: MetaFormControlType.Html, name: name)
     }
 
-    func isValid(form: MetaForm, updateStatus: Bool = true) -> Bool {
+    override func isValid(form: MetaForm, updateStatus: Bool = true) -> Bool {
         return true;
     }
 }
@@ -86,44 +86,46 @@ class MFTextControl: MFControl {
 
     init(parent: MFQuestion, name: String, textType: MetaFormTextType, maxLength: Int? = 0, placeholder: String?) {
         self.textType = textType
-        self.maxLength = maxLength
+        self.maxLength = maxLength ?? 0
         self.placeholder = placeholder
         super.init(parent: parent, controlType: MetaFormControlType.Html, name: name)
     }
 }
 
 class MFOptionControlBase: MFControl {
-    var options: [MFOptionValue]
+    var options: [MFOptions]
     var optionLayout: ControlLayoutStyle = ControlLayoutStyle.Vertical
 
-    init(parent: MFQuestion, name: String,  options: [MFOptions]) {
-        super.init(a`)
+    init(parent: MFQuestion, name: String, controlType: MetaFormControlType, options: [MFOptions], optionLayout: ControlLayoutStyle) {
+        self.options = options
+        self.optionLayout = optionLayout
+        super.init(parent: parent, controlType: controlType, name: name )
     }
 }
 
+class MFOptionControl: MFOptionControlBase {
+    
+}
+
+class MFOptionMultiControl: MFOptionControlBase {
+    
+}
+
 struct MFOptions {
-    var expandOptions: Bool = true
-    var emptyItem: String?
-    var list: [MFOptionValue]
+    var list: [MFOptionValue]?
     var optionSource: MFOptionSource?
-
-    static OptionFromList(options: [MFOptionValue], emptyItem: String?, expandOptions: Bool = false) -> MFOptionValue {
-        let o = new MFOptions()
-        o.list = options;
-        o.expandOptions = expandOptions
-        o.emptyItem = emptyItem
-
+    var emptyItem: String?
+    var expandOptions: Bool = true
+    
+    static func OptionFromList(options: [MFOptionValue], emptyItem: String?, expandOptions: Bool = false) -> MFOptions{
+        let o = MFOptions(list: options, emptyItem: emptyItem, expandOptions: expandOptions)
         return o;
     }
 
-    static OptionFromUrl(url: String], emptyItem: String?, expandOptions: Bool = false) -> MFOptionValue {
-        let os = new MFOptionSource()
-        os.url = url;
-
-        let o = new MFOptions()
-        o.optionSource = os
-        o.expandOptions = expandOptions
-        o.emptyItem = emptyItem
+    static func OptionFromUrl(url: String, emptyItem: String?, expandOptions: Bool = false) -> MFOptions {
+        let os = MFOptionSource(url: url)
+        
+        let o = MFOptions(list: nil, optionSource: os, emptyItem: emptyItem, expandOptions: expandOptions)
 
         return o;
     }    
