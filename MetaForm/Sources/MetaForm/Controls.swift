@@ -111,6 +111,21 @@ class MFOptionMultiControl: MFOptionControlBase {
     
 }
 
+class MFDateControl: MFControl {
+    var dateType: MetaFormDateType
+
+    init(parent: MFQuestion, name: String, dateType: MetaFormDateType) {
+        self.dateType = dateType
+        super.init(parent: parent, controlType: MetaFormControlType.Date, name: name )
+    }
+
+    func getDay(form: MetaForm) -> String {
+        if let value = form.getValue(self.name) {
+            
+        }
+    }
+}
+
 struct MFOptions {
     var list: [MFOptionValue]?
     var optionSource: MFOptionSource?
