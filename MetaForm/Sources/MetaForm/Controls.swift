@@ -120,10 +120,94 @@ class MFDateControl: MFControl {
     }
 
     func getDay(form: MetaForm) -> String {
-        if let value = form.getValue(self.name) {
-            
+        let value = form.getValue(name: self.name)
+        if value.count > 5  {
+            let parts = value.split(separator: "-")
+            if parts.count > 2 {
+                return String(parts[2])
+            }
         }
+        return ""
     }
+    
+    func getMonth(form: MetaForm) -> String {
+        let value = form.getValue(name: self.name)
+        if value.count > 5  {
+            let parts = value.split(separator: "-")
+            if parts.count > 1 {
+                return String(parts[1])
+            }
+        }
+        return ""
+    }
+    
+    func getYear(form: MetaForm) -> String {
+        let value = form.getValue(name: self.name)
+        if value.count > 5  {
+            let parts = value.split(separator: "-")
+            if parts.count > 0 {
+                return String(parts[0])
+            }
+        }
+        return ""
+    }
+}
+
+class MFTimeControl: MFControl {
+    var hourStart: UInt8
+    var hourEnd: UInt8
+    var minuteStep: UInt8
+    
+    static func getHourPart(value: String) -> String {
+        // Two options -
+        // 1. the value is full date and time yyyy-mM-dD HH:MM
+        // 2. the value is just a time HH:MM
+        if value.count > 9 {
+            // first format; split out on " " char to get just the time
+            let parts = value.split(separator: " ")
+            if parts.count == 2 {
+                return hourPartFrom(time: String(parts[1]))
+            }
+        } else {
+            return hourPartFrom(time: value)
+        }
+        
+        return ""
+    }
+    
+    static func getMinutePart(value: String) -> String {
+        // Two options -
+        // 1. the value is full date and time yyyy-mM-dD HH:MM
+        // 2. the value is just a time HH:MM
+        if value.count > 9 {
+            // first format; split out on " " char to get just the time
+            let parts = value.split(separator: " ")
+            if parts.count == 2 {
+                return hourPartFrom(time: String(parts[1]))
+            }
+        } else {
+            return hourPartFrom(time: value)
+        }
+        
+        return ""
+    }
+    
+    private static func hourPartFrom(time: String) -> String {
+        let timeParts = time.split(separator: ":")
+        if timeParts.count == 2 {
+            return String("0\(String(timeParts[0]))".suffix(2))
+        }
+        return ""
+    }
+    
+    init(parent: MFQuestion, name: String, minuteStep: UInt8?, hourStart: UInt8?, hourEnd: UInt8?) {
+        self.minuteStep = minuteStep ?? 1
+        self.hourStart = hourStart ?? 0
+        self.hourEnd = hourEnd ?? 23
+        super.init(parent: parent, controlType: MetaFormControlType.Time, name: name)
+    }
+    
+    
 }
 
 struct MFOptions {
