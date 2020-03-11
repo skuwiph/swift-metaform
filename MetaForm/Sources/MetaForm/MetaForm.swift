@@ -39,6 +39,33 @@ class MetaForm {
         
         return nil
     }
+    
+    static func isFieldReference(value: String) -> (isField: Bool, fieldName: String?) {
+        if value.contains("[") {
+            return ( isField: true, fieldName: getFieldName(from: value))
+        }
+        return (isField: false, fieldName: nil)
+    }
+    
+    static func isVariableReference(value: String) -> (isVariable: Bool, variableName: String?) {
+        if value.contains("%") {
+            return ( isVariable: true, variableName: getVariable(from: value))
+        }
+        return (isVariable: false, variableName: nil)
+    }
+    
+    static func getFieldName(from: String) -> String {
+        let start = from.index(from.startIndex, offsetBy: 1)
+        let end = from.index(from.endIndex, offsetBy: -1)
+        let range = start..<end
+        return String(from[range])
+    }
+    
+    static func getVariable(from: String) -> String {
+        let start = from.index(from.startIndex, offsetBy: 1)
+        let range = start..<from.endIndex
+        return String(from[range])
+    }
 }
 
 struct MFSection {

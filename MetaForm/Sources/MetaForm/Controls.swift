@@ -93,13 +93,25 @@ class MFTextControl: MFControl {
 }
 
 class MFOptionControlBase: MFControl {
-    var options: [MFOptions]
+    var options: MFOptions
     var optionLayout: ControlLayoutStyle = ControlLayoutStyle.Vertical
 
-    init(parent: MFQuestion, name: String, controlType: MetaFormControlType, options: [MFOptions], optionLayout: ControlLayoutStyle) {
+    init(parent: MFQuestion, name: String, controlType: MetaFormControlType, options: MFOptions, optionLayout: ControlLayoutStyle) {
         self.options = options
         self.optionLayout = optionLayout
         super.init(parent: parent, controlType: controlType, name: name )
+    }
+    
+    var hasOptionList: Bool
+    {
+        if let optionsList = self.options.list {
+            return optionsList.count > 0
+        }
+        return false
+    }
+    
+    var hasUrl: Bool {
+        return self.options.optionSource != nil && self.options.optionSource?.url.count ?? 0 > 0
     }
 }
 
@@ -151,6 +163,24 @@ class MFDateControl: MFControl {
         }
         return ""
     }
+    
+    func getMonthNames() -> [String] {
+        return [
+            "Month",
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ]
+    }
 }
 
 class MFTimeControl: MFControl {
@@ -183,10 +213,10 @@ class MFTimeControl: MFControl {
             // first format; split out on " " char to get just the time
             let parts = value.split(separator: " ")
             if parts.count == 2 {
-                return hourPartFrom(time: String(parts[1]))
+                return minutePartFrom(time: String(parts[1]))
             }
         } else {
-            return hourPartFrom(time: value)
+            return minutePartFrom(time: value)
         }
         
         return ""
@@ -200,14 +230,45 @@ class MFTimeControl: MFControl {
         return ""
     }
     
+    private static func minutePartFrom(time: String) -> String {
+        let timeParts = time.split(separator: ":")
+        if timeParts.count == 2 {
+            return String(timeParts[1])
+        }
+        return ""
+    }
+    
     init(parent: MFQuestion, name: String, minuteStep: UInt8?, hourStart: UInt8?, hourEnd: UInt8?) {
         self.minuteStep = minuteStep ?? 1
         self.hourStart = hourStart ?? 0
         self.hourEnd = hourEnd ?? 23
         super.init(parent: parent, controlType: MetaFormControlType.Time, name: name)
     }
-    
-    
+
+    func getHourList() -> [String] {
+        var hourList: [String] = []
+        
+        for h in stride(from: self.hourStart, to: self.hourEnd, by: 1) {
+            hourList.append(String("0\(h)".suffix(2)))
+        }
+        
+        return hourList
+    }
+
+    func getMinuteList() -> [String] {
+        var step = Int(self.minuteStep)
+        var minuteList: [String] = []
+        
+        if step < 1 || step > 59 {
+            step = 1
+        }
+        
+        for m in stride(from: 0, to: 60, by: step) {
+            minuteList.append(String("0\(m)".suffix(2)))
+        }
+        
+        return minuteList
+    }
 }
 
 struct MFOptions {
