@@ -138,36 +138,16 @@ class MFDateControl: MFControl {
     }
 
     func getDay(form: MetaForm) -> String {
-        let value = form.getValue(name: self.name)
-        if value.count > 5  {
-            let parts = value.split(separator: "-")
-            if parts.count > 2 {
-                return String(parts[2])
-            }
-        }
-        return ""
+        return MFDateControl.getDayFrom(form.getValue(self.name))
     }
+
     
     func getMonth(form: MetaForm) -> String {
-        let value = form.getValue(name: self.name)
-        if value.count > 5  {
-            let parts = value.split(separator: "-")
-            if parts.count > 1 {
-                return String(parts[1])
-            }
-        }
-        return ""
+        return MFDateControl.getMonthFrom(form.getValue(self.name))
     }
     
     func getYear(form: MetaForm) -> String {
-        let value = form.getValue(name: self.name)
-        if value.count > 5  {
-            let parts = value.split(separator: "-")
-            if parts.count > 0 {
-                return String(parts[0])
-            }
-        }
-        return ""
+        return MFDateControl.getYearFrom(form.getValue(self.name))
     }
     
     func getMonthNames() -> [String] {
@@ -187,6 +167,44 @@ class MFDateControl: MFControl {
             "December"
         ]
     }
+    
+    static func getDatePart(_ value: String) -> String {
+        let parts = value.split(separator: " ")
+        if parts.count == 2 {
+            return String(parts[0])
+        }
+        return value
+    }
+    
+    static func getDayFrom(_ value: String) -> String {
+        if value.count > 5  {
+            let parts = value.split(separator: "-")
+            if parts.count > 2 {
+                return String(parts[2])
+            }
+        }
+        return ""
+    }
+    
+    static func getMonthFrom(_ value: String) -> String {
+        if value.count > 5  {
+            let parts = value.split(separator: "-")
+            if parts.count > 1 {
+                return String(parts[1])
+            }
+        }
+        return ""
+    }
+    
+    static func getYearFrom(_ value: String) -> String {
+        if value.count > 5  {
+            let parts = value.split(separator: "-")
+            if parts.count > 0 {
+                return String(parts[0])
+            }
+        }
+        return ""
+    }
 }
 
 class MFTimeControl: MFControl {
@@ -194,7 +212,15 @@ class MFTimeControl: MFControl {
     var hourEnd: UInt8
     var minuteStep: UInt8
     
-    static func getHourPart(value: String) -> String {
+    static func getTimePart(_ value: String) -> String {
+        let parts = value.split(separator: " ")
+        if parts.count == 2 {
+            return String(parts[1])
+        }
+        return value
+    }
+    
+    static func getHourPart(_ value: String) -> String {
         // Two options -
         // 1. the value is full date and time yyyy-mM-dD HH:MM
         // 2. the value is just a time HH:MM
@@ -211,7 +237,7 @@ class MFTimeControl: MFControl {
         return ""
     }
     
-    static func getMinutePart(value: String) -> String {
+    static func getMinutePart(_ value: String) -> String {
         // Two options -
         // 1. the value is full date and time yyyy-mM-dD HH:MM
         // 2. the value is just a time HH:MM

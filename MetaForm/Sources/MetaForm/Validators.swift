@@ -38,7 +38,7 @@ class MFValidator {
         let v = MetaForm.isVariableReference(value: valueToCheck)
         
         if f.isField {
-            return answers.getValue(name: f.fieldName!)
+            return answers.getValue(f.fieldName!)
         } else if v.isVariable {
             return MFValidator.resolve(variable: v.variableName!)
         } else {
@@ -58,40 +58,45 @@ class MFValidatorAsync {
 // Implementations of MFValidator
 
 class MFValueRequired: MFValidator {
-    func isValid(form: MetaForm, control: MFControl) -> Bool {
-        let valid = false;
+    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+        var valid = false
 
         // Does the control have a value?
         if form.getValue(control.name).count > 0 {
-            valid = true;
+            valid = true
         }
 
         // Interesting edge case - if this is an option-based
         // control, but we have no options, we assume that the question
         // cannot be displayed and should pass this validator
-        if (control.controlType === MetaFormControlType.Option) {
-            let opt = control as MFOptionControl;
+        if control.controlType == MetaFormControlType.Option {
+            let opt = control as! MFOptionControl;
             if (!opt.hasAvailableOptions) {
-                valid = true;
+                valid = true
             }
         }
 
-        return valid;
+        return valid
     }
 }
 
 class MFAnswerMustMatch: MFValidator {
-    var value: string;
+    var value: String
+    
+    init(type: String, message: String, value: String) {
+        self.value = value
+        super.init(type: type, message: message)
+    }
 
-    func isValid(form: MetaForm, control: MFControl) -> Bool {
-        let valid = false;
+    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+        var valid = false;
 
         // the value for 'match' must equal the value
         // stored in the answers for this control
-        let answerToCheck = form.getValue(control.name);
-        let matchingValue = this.getAnswerForControl(form.answers, this.value);
+        let answerToCheck = form.getValue(control.name)
+        let matchingValue = self.getAnswerForControl(answers: form.data, valueToCheck: self.value)
 
-        valid = answerToCheck === matchingValue;
+        valid = answerToCheck == matchingValue;
 
         return valid;
     }
@@ -101,14 +106,14 @@ class MFEmailValidator: MFValidator {
     // Validates according to the AngularJS Email Validator Regular Expression
     // See: https://github.com/ODAVING/angular/commit/10c9f4cb2016fc070bc7626d2736d9c5b9166989
     // For clarification
-    func isValid(form: MetaForm, control: MFControl) -> Bool {
-        // tslint:disable-next-line: max-line-length
-        let EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
-        let regex = new RegExp(EMAIL_REGEXP);
-        let valid = true;
-        let value = form.getValue(control.name);
-        if (value) {
-            valid = regex.test(value);
+    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+        let pattern = "/^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/"
+        
+        var valid = true
+        let value = form.getValue(control.name)
+        if value.count > 0 {
+            let validator = NSPredicate(format:"SELF MATCHES[c] %@", pattern)
+            valid = validator.evaluate(with: value)
         }
         return valid;
     }
@@ -120,122 +125,153 @@ class MFEmailValidator: MFValidator {
 // but converting to an actual Date time for validation
 // may cause issues.
 class MFDateValidator: MFValidator {
-    func isValid(form: MetaForm, control: MFControl) -> Bool {
-        let valid = true;
+    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+        var valid = true;
 
         let value = form.getValue(control.name);
-        if (value) {
-            let date = form.getValueAsDate(control.name);
+        if value.count > 0 {
+            let date = form.data.getValueAsDate(control.name)
 
-            valid = date !== null;
+            valid = date != nil
         }
         return valid;
     }
 }
 
 class MFDateTimeValidator: MFValidator {
-    func isValid(form: MetaForm, control: MFControl) -> Bool {
-        let valid = true;
+    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+        var valid = true;
 
         let value = form.getValue(control.name);
-        if (value) {
-            let date = form.getValueAsDateTime(control.name);
+        if !value.isEmpty {
+            let date = form.data.getValueAsDateTime(control.name);
 
-            valid = date !== null;
+            valid = date != nil;
         }
         return valid;
     }
 }
 
 class MFDateMustBeAfterValidator: MFValidator {
-    var value: string;
-
-    func isValid(form: MetaForm, control: MFControl) -> Bool {
-        let valid = true;
+    var value: String;
+    
+    init(type: String, message: String, value: String) {
+        self.value = value
+        super.init(type: type, message: message)
+    }
+    
+    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+        var valid = true;
 
         let answerToCheck = form.getValue(control.name);
-        let matchingValue = this.getAnswerForControl(form.answers, this.value);
+        let matchingValue = self.getAnswerForControl(answers: form.data, valueToCheck: self.value);
 
-        if (answerToCheck) {
-            let date = form.getValueAsDate(control.name);
-            let minDate = form.convertValueToDate(matchingValue);
+        if !answerToCheck.isEmpty {
+            let date = form.data.getValueAsDate(control.name);
+            let minDate = form.data.convertValueToDate(matchingValue);
 
-            valid = date > minDate;
+            if date == nil || minDate == nil {
+                return valid
+            }
+            valid = date! > minDate!;
         }
         return valid;
     }
 }
 
 class MFDateMustBeBeforeValidator: MFValidator {
-    var value: string;
-
-    func isValid(form: MetaForm, control: MFControl) -> Bool {
-        let valid = true;
+    var value: String;
+    
+    init(type: String, message: String, value: String) {
+        self.value = value
+        super.init(type: type, message: message)
+    }
+    
+    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+        var valid = true;
 
         let answerToCheck = form.getValue(control.name);
-        let matchingValue = this.getAnswerForControl(form.answers, this.value);
+        let matchingValue = self.getAnswerForControl(answers: form.data, valueToCheck: self.value);
 
-        if (answerToCheck) {
-            let date = form.getValueAsDate(control.name);
-            let maxDate = form.convertValueToDate(matchingValue);
+        if !answerToCheck.isEmpty {
+            let date = form.data.getValueAsDate(control.name);
+            let maxDate = form.data.convertValueToDate(matchingValue, timeValue: nil);
 
-            // console.log(`is ${date} < ${maxDate}?`);
-
-            valid = date < maxDate;
+            if date == nil || maxDate == nil {
+                return valid
+            }
+            valid = date! < maxDate!;
         }
         return valid;
     }
 }
 
 class MFMustBeBetweenValidator: MFValidator {
-    var min: string;
-    var max: string;
+    var min: String;
+    var max: String;
+    
+    init(type: String, message: String, min: String, max: String) {
+        self.min = min
+        self.max = max
+        super.init(type: type, message: message)
+    }
 
-    func isValid(form: MetaForm, control: MFControl) -> Bool {
-        let valid = true;
+    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+        var valid = true;
 
         let answerToCheck = form.getValue(control.name);
-        if (answerToCheck) {
+        if !answerToCheck.isEmpty {
 
-            let minCheck = this.getAnswerForControl(form.answers, this.min);
-            let maxCheck = this.getAnswerForControl(form.answers, this.max);
+            let minCheck = self.getAnswerForControl(answers: form.data, valueToCheck: self.min);
+            let maxCheck = self.getAnswerForControl(answers: form.data, valueToCheck: self.max);
 
-            if (control.controlType === MetaFormControlType.Date || control.controlType === MetaFormControlType.Time) {
-                valid = this.dateInRange(form, answerToCheck, minCheck, maxCheck);
+            if (control.controlType == MetaFormControlType.Date || control.controlType == MetaFormControlType.Time) {
+                valid = self.dateInRange(form: form, check: answerToCheck, after: minCheck, before: maxCheck);
             } else {
-                valid = +answerToCheck > +minCheck && +answerToCheck < +maxCheck;
+                valid = false;
+                //valid = +answerToCheck > +minCheck && +answerToCheck < +maxCheck;
             }
         }
         return valid;
     }
 
-    private func dateInRange(form: MetaForm, check: string, after: string, before: string) {
-        let valid = true;
+    private func dateInRange(form: MetaForm, check: String, after: String, before: String) -> Bool {
+        var valid = true;
 
-        let checkDate = form.convertValueToDate(check);
-        let minDate = form.convertValueToDate(after);
-        let maxDate = form.convertValueToDate(before);
+        let checkDate = form.data.convertValueToDate(check, timeValue: nil);
+        let minDate = form.data.convertValueToDate(after, timeValue: nil);
+        let maxDate = form.data.convertValueToDate(before, timeValue: nil);
 
-        valid = checkDate > minDate && checkDate < maxDate;
+        if checkDate == nil || minDate == nil || maxDate == nil {
+            return valid
+        }
+        
+        valid = checkDate! > minDate! && checkDate! < maxDate!;
 
         return valid;
     }
 }
 
 class MFMustExceedWordCountValidator: MFValidator {
-    var targetWordCount: number;
-    func isValid(form: MetaForm, control: MFControl) -> Bool {
-        let valid = false;
+    var targetWordCount: Int;
+    
+    init(type: String, message: String, targetWordCount: Int) {
+        self.targetWordCount = targetWordCount
+        super.init(type: type, message: message)
+    }
+    
+    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+        var valid = false;
 
         let answerToCheck = form.getValue(control.name);
-        if (answerToCheck) {
-            const wordCount = answerToCheck
-                .replace(/\./g, ': ')
-                .replace(/\S+/g, 'a')
-                .replace(/\s+/g, '').count;
-
-            valid = wordCount >= this.targetWordCount;
-        }
+//        if (answerToCheck) {
+//            var wordCount = answerToCheck
+//                .replace(/\./g, ': ')
+//                .replace(/\S+/g, 'a')
+//                .replace(/\s+/g, '').count;
+//
+//            valid = wordCount >= this.targetWordCount;
+//        }
 
         return valid;
     }

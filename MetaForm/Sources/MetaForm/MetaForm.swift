@@ -53,7 +53,7 @@ class MetaForm {
             for c in question.controls {
                 if c.dependencies != nil {
                     for d in c.dependencies! {
-                        return self.getValue(name: d).isEmpty
+                        return self.getValue(d).isEmpty
                     }
                 }
             }
@@ -62,12 +62,12 @@ class MetaForm {
         }
     }
     
-    func getValue(name: String) -> String {
-        return self.data.getValue(name: name)
+    func getValue(_ name: String) -> String {
+        return self.data.getValue(name)
     }
     
-    func setValue(name: String, value: String) {
-        self.data.setValue(name: name, value: value)
+    func setValue(_ name: String, value: String) {
+        self.data.setValue(name, value: value)
     }
     
     func addQuestion(name: String, caption: String) -> MFQuestion {
