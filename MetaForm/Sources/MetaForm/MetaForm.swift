@@ -17,6 +17,51 @@ class MetaForm {
         self.title = title
     }
     
+    // Initialise the form ready for first use/display
+    func initialise() {
+        // Find all field references and dependencies
+        for q in self.questions {
+            for c in q.controls {
+                // a reference is required when a validator
+                // from one control checks against another
+                // control
+                if !c.references.isEmpty {
+                    for name in c.references {
+                        self.addReference(from: c.name, to: name)
+                    }
+                }
+                
+                // A dependency is where data has to come
+                // from another control
+                if c.dependencies != nil && !c.dependencies!.isEmpty {
+                    for dependent in c.dependencies! {
+                        self.addReference(from: c.name, to: dependent)
+                    }
+                }
+                
+                self.determineQuestionDisplay(question: q, dependencies: c.dependencies)
+            }
+        }
+    }
+    
+    func determineQuestionDisplay(question: MFQuestion, dependencies: [String]?) {
+        if dependencies == nil {
+            return
+        }
+        
+        question.canBeDisplayed = {
+            for c in question.controls {
+                if c.dependencies != nil {
+                    for d in c.dependencies! {
+                        return self.getValue(name: d).isEmpty
+                    }
+                }
+            }
+            
+            return true
+        }
+    }
+    
     func getValue(name: String) -> String {
         return self.data.getValue(name: name)
     }
@@ -37,6 +82,23 @@ class MetaForm {
             return q
         }
         
+        return nil
+    }
+    
+    private func addReference(from: String, to: String) {
+        if let toControl = self.getControlBy(name: to) {
+            toControl.addReferencedBy(controlName: from)
+        }
+    }
+    
+    private func getControlBy(name: String) -> MFControl? {
+        for q in self.questions {
+            for c in q.controls {
+                if c.name == name {
+                    return c
+                }
+            }
+        }
         return nil
     }
     
@@ -84,6 +146,7 @@ class MFQuestion {
     var controls: [MFControl] = []
     var readonly = false
     var available = true
+    var canBeDisplayed: () -> Bool = {return true}
     
     init(sectionId: UInt8, name: String, caption: String?) {
         self.sectionId = sectionId

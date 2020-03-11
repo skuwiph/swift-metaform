@@ -20,8 +20,8 @@ class MFControl {
     var validatorsAsync: [MFValidatorAsync]?
     
     // Internal usage
-    var isReferencedBy: [String]?
-    var references: [String]?
+    var isReferencedBy = Set<String>()
+    var references: [String] = []
     var dependencies: [String]?
     
     var readonly = false
@@ -50,6 +50,12 @@ class MFControl {
         }
         
         return valid
+    }
+    
+    func addReferencedBy(controlName: String) {
+        if !self.isReferencedBy.contains(controlName) {
+            self.isReferencedBy.insert(controlName)
+        }
     }
 }
 
