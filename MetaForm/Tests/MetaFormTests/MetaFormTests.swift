@@ -17,7 +17,7 @@ final class MetaFormTests: XCTestCase {
         
         XCTAssert(form.questions.count == 1)
         
-        form.setValue(name: "d1", value: "2019-10-11")
+        form.setValue("d1", value: "2019-10-11")
         
         // Get date control out
         if let c = form.getQuestion(name: "q1")?.controls[0] as! MFDateControl? {
@@ -25,7 +25,7 @@ final class MetaFormTests: XCTestCase {
             XCTAssert(c.getMonth(form: form) == "10")
             XCTAssert(c.getYear(form: form) == "2019")
         
-            form.setValue(name: "d1", value: "2021-1-3")
+            form.setValue("d1", value: "2021-1-3")
             XCTAssert(c.getDay(form: form) == "3")
             XCTAssert(c.getMonth(form: form) == "1")
             XCTAssert(c.getYear(form: form) == "2021")
@@ -42,18 +42,18 @@ final class MetaFormTests: XCTestCase {
         
         XCTAssert(form.questions.count == 1)
         
-        form.setValue(name: "t1", value: "10:45")
+        form.setValue("t1", value: "10:45")
         
-        let t1 = MFTimeControl.getHourPart(value: "10:45")
-        let t2 = MFTimeControl.getHourPart(value: "9:45")
-        let t3 = MFTimeControl.getHourPart(value: "2020-1-3 14:45")
+        let t1 = MFTimeControl.getHourPart("10:45")
+        let t2 = MFTimeControl.getHourPart("9:45")
+        let t3 = MFTimeControl.getHourPart("2020-1-3 14:45")
         XCTAssertTrue(t1 == "10", "Couldn't extract time from string \(t1)")
         XCTAssertTrue(t2 == "09", "Couldn't extract time from string \(t2)")
         XCTAssertTrue(t3 == "14", "Couldn't extract time from string \(t3)")
 
-        let t4 = MFTimeControl.getMinutePart(value: "10:45")
-        let t5 = MFTimeControl.getMinutePart(value: "9:07")
-        let t6 = MFTimeControl.getMinutePart(value: "2020-12-03 14:35")
+        let t4 = MFTimeControl.getMinutePart("10:45")
+        let t5 = MFTimeControl.getMinutePart("9:07")
+        let t6 = MFTimeControl.getMinutePart("2020-12-03 14:35")
         XCTAssertTrue(t4 == "45", "Couldn't extract time from string \(t4)")
         XCTAssertTrue(t5 == "07", "Couldn't extract time from string \(t5)")
         XCTAssertTrue(t6 == "35", "Couldn't extract time from string \(t6)")

@@ -71,7 +71,7 @@ class MFValueRequired: MFValidator {
         // cannot be displayed and should pass this validator
         if control.controlType == MetaFormControlType.Option {
             let opt = control as! MFOptionControl;
-            if (!opt.hasAvailableOptions) {
+            if (!opt.hasOptionList) {
                 valid = true
             }
         }

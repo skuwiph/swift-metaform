@@ -119,6 +119,14 @@ class MFOptionControlBase: MFControl {
     var hasUrl: Bool {
         return self.options.optionSource != nil && self.options.optionSource?.url.count ?? 0 > 0
     }
+    
+    var optionList: [MFOptionValue] {
+        return self.options.list ?? []
+    }
+    
+    var optionUrl: String {
+        return self.options.optionSource!.url
+    }
 }
 
 class MFOptionControl: MFOptionControlBase {
