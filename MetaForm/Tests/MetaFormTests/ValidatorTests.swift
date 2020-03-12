@@ -62,9 +62,36 @@ final class ValidatorTests: XCTestCase {
         XCTAssertTrue(form.isValid(false))
     }
     
+    func testEmail() {
+        let form = MetaForm(name: "test", title: "Test Form")
+        _ = form
+            .addQuestion(name: "q1", caption: "Test Question")
+            .addTextControl(name: "t1", textType: MetaFormTextType.Email)
+            .addValidator(MFValidator.Email(message: "Answer must be an email address"))
+        
+        // Empty should be permitted (the required validator must be added if empty is incorrect)
+        XCTAssertTrue(form.isValid(false))
+        
+        // Valid emails
+        let valids = ["frank@example.com", "frank.smith@ex.co", "_frank@a.co.nz", "jack@email.example.com", "first-last@test.com", "1234@ucl.ac.uk", "first+last@example.com", "email@exa-one.com", "______@example.com"]
+        
+        for v in valids {
+            form.setValue("t1", value: v)
+            XCTAssertTrue(form.isValid(false), "Value \(v) should be a valid email")
+        }
+        
+        // Invalid emails
+        let invalids = ["frank.example.com", "plainaddress"]
+        for v in invalids {
+            form.setValue("t1", value: v)
+            XCTAssertFalse(form.isValid(false), "Value \(v) should be an invalid email")
+        }
+    }
+    
     static var allTests = [
         ("testRequired", testRequired),
         ("testAnswerMustMatchSimple", testAnswerMustMatchSimple),
-        ("testAnswerMustMatchField", testAnswerMustMatchField)
+        ("testAnswerMustMatchField", testAnswerMustMatchField),
+        ("testEmail", testEmail)
     ]
 }
