@@ -98,11 +98,40 @@ final class ValidatorTests: XCTestCase {
         // Empty should be valid (no required)
         XCTAssertTrue(form.isValid(false))
         
-        form.setValue("t1", value: "A")
-        XCTAssertFalse(form.isValid(false), "\(form.getValue("t1")) is not valid")
+        let invalids = ["A", "1990-2-31", "2010-17-1", "2009-10-44"]
+        for v in invalids {
+            form.setValue("t1", value: v)
+            XCTAssertFalse(form.isValid(false), "\(v) is invalid")
+        }
 
-        form.setValue("t1", value: "2020-04-10")
-        XCTAssertTrue(form.isValid(false), "\(form.getValue("t1")) is valid")
+        let valids = ["2020-04-10", "1999-3-10", "2004-10-1", "2000-2-29"]
+        for v in valids {
+            form.setValue("t1", value: v)
+            XCTAssertTrue(form.isValid(false), "\(v) is valid")
+        }
+    }
+    
+    func testDateTimes() {
+        let form = MetaForm(name: "test", title: "Test Form")
+        _ = form
+            .addQuestion(name: "q1", caption: "Test Question")
+            .addTextControl(name: "t1", textType: MetaFormTextType.SingleLine)
+            .addValidator(MFValidator.DateTime(message: "Answer must be date if present"))
+        
+        // Empty should be valid (no required)
+        XCTAssertTrue(form.isValid(false))
+        
+        let invalids = ["A", "1990-2-31 11:30", "2010-17-1 99:01", "2009-10-1 25:30"]
+        for v in invalids {
+            form.setValue("t1", value: v)
+            XCTAssertFalse(form.isValid(false), "\(v) is invalid")
+        }
+        
+        let valids = ["2020-04-10 9:30", "1999-3-10 14:50", "2004-10-1 06:45", "2000-2-29 18:59"]
+        for v in valids {
+            form.setValue("t1", value: v)
+            XCTAssertTrue(form.isValid(false), "\(v) is valid")
+        }
     }
     
     static var allTests = [
@@ -110,6 +139,7 @@ final class ValidatorTests: XCTestCase {
         ("testAnswerMustMatchSimple", testAnswerMustMatchSimple),
         ("testAnswerMustMatchField", testAnswerMustMatchField),
         ("testEmail", testEmail),
-        ("testDate", testDate)
+        ("testDate", testDate),
+        ("testDateTimes", testDateTimes)
     ]
 }

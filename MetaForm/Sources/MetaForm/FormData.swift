@@ -60,10 +60,14 @@ class MetaFormData {
         var calendar = Calendar.current
         calendar.locale = Locale.init(identifier: "en_US_POSIX")
         calendar.timeZone = TimeZone(abbreviation: "UTC")!
-        let dc = DateComponents(calendar: calendar, year: Int(year), month: Int(month), day: Int(month))
-
-        let date = calendar.date(from: dc)
-        return date
+        let dc = DateComponents(calendar: calendar, year: Int(year), month: Int(month), day: Int(day), hour: hour, minute: mins, second: 0)
+        // print("\(value) is valid? \(dc.isValidDate(in: calendar))")
+        if dc.isValidDate(in: calendar) {
+            let date = calendar.date(from: dc)
+            return date
+        } else {
+            return nil
+        }
     }
     
     private func correctFieldName(name: String) -> String {

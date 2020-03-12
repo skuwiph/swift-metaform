@@ -66,6 +66,11 @@ class MFValidator {
         return v;
     }
     
+    static func DateTime(message: String) -> MFDateTimeValidator {
+        let v = MFDateTimeValidator(type: "DateTime", message: message)
+        return v;
+    }
+    
     static func resolve(variable: String) -> String {
         return ""
     }
