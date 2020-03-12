@@ -46,6 +46,16 @@ class MFValidator {
         }
     }
     
+    static func Required(message: String) -> MFValueRequired {
+        let v = MFValueRequired(type: "Required", message: message)
+        return v;
+    }
+    
+    static func AnswerMustMatch(_ match: String, message: String) -> MFAnswerMustMatch {
+        let v = MFAnswerMustMatch(type: "AnswerMustMatch", message: message, value: match)
+        return v
+    }
+    
     static func resolve(variable: String) -> String {
         return ""
     }
@@ -264,14 +274,9 @@ class MFMustExceedWordCountValidator: MFValidator {
         var valid = false;
 
         let answerToCheck = form.getValue(control.name);
-//        if (answerToCheck) {
-//            var wordCount = answerToCheck
-//                .replace(/\./g, ': ')
-//                .replace(/\S+/g, 'a')
-//                .replace(/\s+/g, '').count;
-//
-//            valid = wordCount >= this.targetWordCount;
-//        }
+        if answerToCheck.count > 0  {
+            valid = answerToCheck.numberOfWords >= self.targetWordCount
+       }
 
         return valid;
     }

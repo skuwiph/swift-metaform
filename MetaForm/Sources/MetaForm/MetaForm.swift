@@ -12,6 +12,8 @@ class MetaForm {
     var questions: [MFQuestion] = []
     var data = MetaFormData()
     
+    var rules: [String: String]?
+    
     init(name: String, title: String) {
         self.name = name
         self.title = title
@@ -42,6 +44,30 @@ class MetaForm {
                 self.determineQuestionDisplay(question: q, dependencies: c.dependencies)
             }
         }
+    }
+    
+    func isValid(_ updateStatus: Bool = true) -> Bool {
+        return self.areQuestionsValid(self.questions, updateStatus: updateStatus)
+    }
+    
+    func areQuestionsValid(_ questions: [MFQuestion], updateStatus: Bool = true) -> Bool {
+        var valid = true
+        
+        for q in questions {
+            if self.ruleMatches(q, rules: self.rules) {
+                if !q.isValid(self, updateStatus: updateStatus) {
+                    valid = false
+                    break;
+                }
+            }
+        }
+        
+        return valid
+    }
+    
+    func ruleMatches(_ question: MFQuestion, rules: [String: String]?) -> Bool {
+        
+        return true
     }
     
     func determineQuestionDisplay(question: MFQuestion, dependencies: [String]?) {
@@ -154,11 +180,29 @@ class MFQuestion {
         self.caption = caption
     }
     
+    func isValid(_ form: MetaForm, updateStatus: Bool) -> Bool {
+        var valid = true
+        
+        for c in self.controls {
+            if !c.isValid(form: form, updateStatus: updateStatus) {
+                valid = false
+            }
+        }
+        
+        return valid
+    }
+    
+    func addTextControl(name: String, textType: MetaFormTextType, maxLength: Int? = 0, placeholder: String? = "") -> MFTextControl {
+        let t = MFTextControl(parent: self, name: name, textType: textType, maxLength: maxLength, placeholder: placeholder)
+        self.pushControl(control: t)
+        return t
+    }
+    
     func addDateControl(name: String, dateType: MetaFormDateType) -> MFDateControl {
         let c = MFDateControl(parent: self, name: name, dateType: dateType)
         self.pushControl(control: c)
         
-        return c;
+        return c
     }
     
     func addTimeControl(name: String, minuteStep: UInt8?, hourStart: UInt8?, hourEnd: UInt8?) -> MFTimeControl {
@@ -166,7 +210,7 @@ class MFQuestion {
         
         self.pushControl(control: c)
         
-        return c;
+        return c
     }
     
     private func pushControl(control: MFControl) {

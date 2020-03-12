@@ -35,6 +35,25 @@ class MFControl {
         self.controlId = "\(parent.name):\(name)"
     }
     
+    func addLabel(_ label: String) -> MFControl {
+        self.label = label
+        return self
+    }
+    
+    func addValidator(_ v: MFValidator) -> MFControl {
+        if self.validators == nil {
+            self.validators = []
+        }
+        
+        self.validators!.append(v)
+        
+        if let references = v.referencesField {
+            self.references = references
+        }
+        
+        return self
+    }
+    
     func isValid(form: MetaForm, updateStatus: Bool = true) -> Bool {
         var valid = true
         
