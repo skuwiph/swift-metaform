@@ -61,6 +61,11 @@ class MFValidator {
         return v
     }
     
+    static func Date(message: String) -> MFDateValidator {
+        let v = MFDateValidator(type: "Date", message: message)
+        return v;
+    }
+    
     static func resolve(variable: String) -> String {
         return ""
     }
@@ -141,10 +146,6 @@ class MFEmailValidator: MFValidator {
 }
 
 // Date validation
-// NOTE(Ian) -> Must check locale/timezone changes.
-// The date control tries to maintain a safe internal format
-// but converting to an actual Date time for validation
-// may cause issues.
 class MFDateValidator: MFValidator {
     override func isValid(form: MetaForm, control: MFControl) -> Bool {
         var valid = true;

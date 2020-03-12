@@ -24,8 +24,10 @@ class MetaFormData {
     func getValueAsDate(_ name: String) -> Date? {
         let value = self.getValue(name)
         let datePart = MFDateControl.getDatePart(value)
-        let timePart = MFTimeControl.getTimePart(value)
-        
+        var timePart: String? = nil
+        if value.contains(":") {
+            timePart = MFTimeControl.getTimePart(value)
+        }
         return self.convertValueToDate(datePart, timeValue: timePart)
     }
     
@@ -44,24 +46,24 @@ class MetaFormData {
         let month = MFDateControl.getMonthFrom(value)
         let day = MFDateControl.getDayFrom(value)
         
-        var hour = 0
+        var hour = 12
         var mins = 0
         if timeValue != nil {
-            hour = Int(MFTimeControl.getHourPart(timeValue!)) ?? 0
-            mins = Int(MFTimeControl.getMinutePart(timeValue!)) ?? 0
+            hour = Int(MFTimeControl.getHourPart(timeValue!)) ?? -1
+            mins = Int(MFTimeControl.getMinutePart(timeValue!)) ?? -1
         }
         
-        var dc = DateComponents()
-        dc.timeZone = TimeZone(abbreviation: "UTC")
-        dc.year = Int(year)
-        dc.month = Int(month)
-        dc.day = Int(day)
-        dc.hour = hour
-        dc.minute = mins
+        if year.isEmpty || month.isEmpty || day.isEmpty || hour == -1 || mins == -1 {
+            return nil
+        }
         
-        let userCalendar = Calendar.current
-        return userCalendar.date(from: dc)
-        
+        var calendar = Calendar.current
+        calendar.locale = Locale.init(identifier: "en_US_POSIX")
+        calendar.timeZone = TimeZone(abbreviation: "UTC")!
+        let dc = DateComponents(calendar: calendar, year: Int(year), month: Int(month), day: Int(month))
+
+        let date = calendar.date(from: dc)
+        return date
     }
     
     private func correctFieldName(name: String) -> String {

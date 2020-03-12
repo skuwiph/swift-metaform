@@ -88,10 +88,28 @@ final class ValidatorTests: XCTestCase {
         }
     }
     
+    func testDate() {
+        let form = MetaForm(name: "test", title: "Test Form")
+        _ = form
+            .addQuestion(name: "q1", caption: "Test Question")
+            .addTextControl(name: "t1", textType: MetaFormTextType.SingleLine)
+            .addValidator(MFValidator.Date(message: "Answer must be date if present"))
+        
+        // Empty should be valid (no required)
+        XCTAssertTrue(form.isValid(false))
+        
+        form.setValue("t1", value: "A")
+        XCTAssertFalse(form.isValid(false), "\(form.getValue("t1")) is not valid")
+
+        form.setValue("t1", value: "2020-04-10")
+        XCTAssertTrue(form.isValid(false), "\(form.getValue("t1")) is valid")
+    }
+    
     static var allTests = [
         ("testRequired", testRequired),
         ("testAnswerMustMatchSimple", testAnswerMustMatchSimple),
         ("testAnswerMustMatchField", testAnswerMustMatchField),
-        ("testEmail", testEmail)
+        ("testEmail", testEmail),
+        ("testDate", testDate)
     ]
 }
