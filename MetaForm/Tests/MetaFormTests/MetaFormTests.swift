@@ -2,12 +2,6 @@ import XCTest
 @testable import MetaForm
 
 final class MetaFormTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        // XCTAssertEqual(MetaForm().name, "Hello, World!")
-    }
     
     func testDateExtraction() {
         let form = MetaForm(name: "test", title: "Test Form")
@@ -103,7 +97,6 @@ final class MetaFormTests: XCTestCase {
     }
     
     static var allTests = [
-        ("testExample", testExample),
         ("testDataExtraction", testDateExtraction),
         ("testTimeExtraction", testTimeExtraction),
         ("testTimeLists", testTimeLists),
