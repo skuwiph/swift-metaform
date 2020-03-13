@@ -268,32 +268,27 @@ class MFMustBeBetweenValidator: MFValidator {
     override func isValid(form: MetaForm, control: MFControl) -> Bool {
         var valid = true;
 
-        let answerToCheck = form.getValue(control.name);
+        let answerToCheck = form.getValue(control.name)
         if !answerToCheck.isEmpty {
-
-            let minCheck = self.getAnswerForControl(answers: form.data, valueToCheck: self.min);
-            let maxCheck = self.getAnswerForControl(answers: form.data, valueToCheck: self.max);
-
-            if (control.controlType == MetaFormControlType.Date || control.controlType == MetaFormControlType.Time) {
-                valid = self.dateInRange(form: form, check: answerToCheck, after: minCheck, before: maxCheck);
+            if (control.controlType == .Date
+                || control.controlType == .Time
+                || control.controlType == .DateTime) {
+                valid = self.dateInRange(form: form, control: control)
             } else {
-                guard let check = Int(answerToCheck),
-                    let min = Int(minCheck),
-                    let max = Int(maxCheck) else {
-                        return false;
-                }
-                valid = check > min && check < max;
+                valid = self.numericInRange(form: form, answerToCheck: answerToCheck)
             }
         }
-        return valid;
+        return valid
     }
 
-    private func dateInRange(form: MetaForm, check: String, after: String, before: String) -> Bool {
+    private func dateInRange(form: MetaForm, control: MFControl) -> Bool {
         var valid = true;
+        let minCheck = self.getAnswerForControl(answers: form.data, valueToCheck: self.min)
+        let maxCheck = self.getAnswerForControl(answers: form.data, valueToCheck: self.max)
 
-        let checkDate = form.data.convertValueToDate(check, timeValue: nil);
-        let minDate = form.data.convertValueToDate(after, timeValue: nil);
-        let maxDate = form.data.convertValueToDate(before, timeValue: nil);
+        let checkDate = form.data.getValueAsDateTime(control.name)
+        let minDate = form.data.getAsDateTime(minCheck)
+        let maxDate = form.data.getAsDateTime(maxCheck)
 
         if checkDate == nil || minDate == nil || maxDate == nil {
             return valid
@@ -301,6 +296,23 @@ class MFMustBeBetweenValidator: MFValidator {
         
         valid = checkDate! > minDate! && checkDate! < maxDate!;
 
+        return valid;
+    }
+    
+    private func numericInRange(form: MetaForm, answerToCheck: String) -> Bool {
+        var valid = true;
+        
+        let minCheck = self.getAnswerForControl(answers: form.data, valueToCheck: self.min)
+        let maxCheck = self.getAnswerForControl(answers: form.data, valueToCheck: self.max)
+
+        guard let check = Int(answerToCheck),
+            let min = Int(minCheck),
+            let max = Int(maxCheck) else {
+                return false
+        }
+        
+        valid = check > min && check < max;
+        
         return valid;
     }
 }

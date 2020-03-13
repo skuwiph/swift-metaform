@@ -213,6 +213,13 @@ class MFQuestion {
         return c
     }
     
+    func addDateTimeControl(name: String, minuteStep: UInt8?, hourStart: UInt8?, hourEnd: UInt8?) -> MFDateTimeControl {
+        let c = MFDateTimeControl(parent: self, name: name, minuteStep: 15, hourStart: 8, hourEnd: 20)
+        
+        self.pushControl(control: c)
+        return c
+    }
+    
     func addOptionControl(name: String, options: MFOptions, layout: ControlLayoutStyle = ControlLayoutStyle.Vertical) -> MFOptionControl {
         let c = MFOptionControl(parent: self, name: name, controlType: MetaFormControlType.Option, options: options, optionLayout: layout)
         

@@ -23,6 +23,17 @@ class MetaFormData {
     
     func getValueAsDate(_ name: String) -> Date? {
         let value = self.getValue(name)
+        return self.getAsDateTime(value)
+    }
+    
+    // Todo(Ian): This is the same as the above in the typescript
+    // version too...?
+    func getValueAsDateTime(_ name: String) -> Date? {
+        let value = self.getValue(name)
+        return self.getAsDateTime(value);
+    }
+    
+    func getAsDateTime(_ value: String) -> Date? {
         let datePart = MFDateControl.getDatePart(value)
         var timePart: String? = nil
         if value.contains(":") {
@@ -31,22 +42,12 @@ class MetaFormData {
         return self.convertValueToDate(datePart, timeValue: timePart)
     }
     
-    // Todo(Ian): This is the same as the above in the typescript
-    // version too...?
-    func getValueAsDateTime(_ name: String) -> Date? {
-        let value = self.getValue(name)
-        let datePart = MFDateControl.getDatePart(value)
-        let timePart = MFTimeControl.getTimePart(value)
-        
-        return self.convertValueToDate(datePart, timeValue: timePart)
-    }
-    
     func convertValueToDate(_ value: String, timeValue: String? = nil) -> Date? {
         let year = MFDateControl.getYearFrom(value)
         let month = MFDateControl.getMonthFrom(value)
         let day = MFDateControl.getDayFrom(value)
         
-        var hour = 12
+        var hour = 0
         var mins = 0
         if timeValue != nil {
             hour = Int(MFTimeControl.getHourPart(timeValue!)) ?? -1

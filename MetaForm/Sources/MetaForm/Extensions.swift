@@ -16,4 +16,14 @@ extension String {
         })
         return count
     }
+    
+    func split(with: Character, andTakePart: Int) -> String {
+        if !self.isEmpty {
+            let split = self.split(separator: with)
+            if split.count >= andTakePart {
+                return String(split[andTakePart])
+            }
+        }
+        return ""
+    }
 }

@@ -83,7 +83,7 @@ class MFLabel: MFControl {
     
     init(parent: MFQuestion, name: String, text: String) {
         self.text = text
-        super.init(parent: parent, controlType: MetaFormControlType.Label, name: name)
+        super.init(parent: parent, controlType: .Label, name: name)
     }
 
     override func isValid(form: MetaForm, updateStatus: Bool = true) -> Bool {
@@ -96,7 +96,7 @@ class MFHtmlTextControl: MFControl {
 
     init(parent: MFQuestion, name: String, html: String) {
         self.html = html
-        super.init(parent: parent, controlType: MetaFormControlType.Html, name: name)
+        super.init(parent: parent, controlType: .Html, name: name)
     }
 
     override func isValid(form: MetaForm, updateStatus: Bool = true) -> Bool {
@@ -113,13 +113,13 @@ class MFTextControl: MFControl {
         self.textType = textType
         self.maxLength = maxLength ?? 0
         self.placeholder = placeholder
-        super.init(parent: parent, controlType: MetaFormControlType.Html, name: name)
+        super.init(parent: parent, controlType: .Html, name: name)
     }
 }
 
 class MFOptionControlBase: MFControl {
     var options: MFOptions
-    var optionLayout: ControlLayoutStyle = ControlLayoutStyle.Vertical
+    var optionLayout: ControlLayoutStyle = .Vertical
 
     init(parent: MFQuestion, name: String, controlType: MetaFormControlType, options: MFOptions, optionLayout: ControlLayoutStyle) {
         self.options = options
@@ -156,12 +156,19 @@ class MFOptionMultiControl: MFOptionControlBase {
     
 }
 
-class MFDateControl: MFControl {
+protocol MFPDate {
+    func getDay(form: MetaForm) -> String
+    func getMonth(form: MetaForm) -> String
+    func getYear(form: MetaForm) -> String
+    func getMonthNames() -> [String]
+}
+
+class MFDateControl: MFControl, MFPDate {
     var dateType: MetaFormDateType
 
     init(parent: MFQuestion, name: String, dateType: MetaFormDateType) {
         self.dateType = dateType
-        super.init(parent: parent, controlType: MetaFormControlType.Date, name: name )
+        super.init(parent: parent, controlType: .Date, name: name )
     }
 
     func getDay(form: MetaForm) -> String {
@@ -196,55 +203,43 @@ class MFDateControl: MFControl {
     }
     
     static func getDatePart(_ value: String) -> String {
-        let parts = value.split(separator: " ")
-        if parts.count == 2 {
-            return String(parts[0])
-        }
-        return value
+        return value.split(with: " ", andTakePart: 0)
     }
     
     static func getDayFrom(_ value: String) -> String {
         if value.count > 5  {
-            let parts = value.split(separator: "-")
-            if parts.count > 2 {
-                return String(parts[2])
-            }
+            return value.split(with: "-", andTakePart: 2)
         }
         return ""
     }
     
     static func getMonthFrom(_ value: String) -> String {
         if value.count > 5  {
-            let parts = value.split(separator: "-")
-            if parts.count > 1 {
-                return String(parts[1])
-            }
+            return value.split(with: "-", andTakePart: 1)
         }
         return ""
     }
     
     static func getYearFrom(_ value: String) -> String {
         if value.count > 5  {
-            let parts = value.split(separator: "-")
-            if parts.count > 0 {
-                return String(parts[0])
-            }
+            return value.split(with: "-", andTakePart: 0)
         }
         return ""
     }
 }
 
-class MFTimeControl: MFControl {
+protocol MFPTime {
+    func getHourList() -> [String]
+    func getMinuteList() -> [String]
+}
+
+class MFTimeControl: MFControl, MFPTime {
     var hourStart: UInt8
     var hourEnd: UInt8
     var minuteStep: UInt8
     
     static func getTimePart(_ value: String) -> String {
-        let parts = value.split(separator: " ")
-        if parts.count == 2 {
-            return String(parts[1])
-        }
-        return value
+        return value.split(with: " ", andTakePart: 1)
     }
     
     static func getHourPart(_ value: String) -> String {
@@ -253,15 +248,10 @@ class MFTimeControl: MFControl {
         // 2. the value is just a time HH:MM
         if value.count > 9 {
             // first format; split out on " " char to get just the time
-            let parts = value.split(separator: " ")
-            if parts.count == 2 {
-                return hourPartFrom(time: String(parts[1]))
-            }
+            return hourPartFrom(time: value.split(with: " ", andTakePart: 1))
         } else {
             return hourPartFrom(time: value)
         }
-        
-        return ""
     }
     
     static func getMinutePart(_ value: String) -> String {
@@ -270,38 +260,26 @@ class MFTimeControl: MFControl {
         // 2. the value is just a time HH:MM
         if value.count > 9 {
             // first format; split out on " " char to get just the time
-            let parts = value.split(separator: " ")
-            if parts.count == 2 {
-                return minutePartFrom(time: String(parts[1]))
-            }
+            return minutePartFrom(time: value.split(with: " ", andTakePart: 1))
         } else {
             return minutePartFrom(time: value)
         }
-        
-        return ""
     }
     
     private static func hourPartFrom(time: String) -> String {
-        let timeParts = time.split(separator: ":")
-        if timeParts.count == 2 {
-            return String("0\(String(timeParts[0]))".suffix(2))
-        }
-        return ""
+        let hour = time.split(with: ":", andTakePart: 0)
+        return String("0\(hour)".suffix(2))
     }
     
     private static func minutePartFrom(time: String) -> String {
-        let timeParts = time.split(separator: ":")
-        if timeParts.count == 2 {
-            return String(timeParts[1])
-        }
-        return ""
+        return time.split(with: ":", andTakePart: 1)
     }
     
     init(parent: MFQuestion, name: String, minuteStep: UInt8?, hourStart: UInt8?, hourEnd: UInt8?) {
         self.minuteStep = minuteStep ?? 1
         self.hourStart = hourStart ?? 0
         self.hourEnd = hourEnd ?? 23
-        super.init(parent: parent, controlType: MetaFormControlType.Time, name: name)
+        super.init(parent: parent, controlType: .Time, name: name)
     }
 
     func getHourList() -> [String] {
@@ -327,6 +305,41 @@ class MFTimeControl: MFControl {
         }
         
         return minuteList
+    }
+}
+
+class MFDateTimeControl: MFControl, MFPTime, MFPDate {
+    var dateControl: MFDateControl
+    var timeControl: MFTimeControl
+    
+    init(parent: MFQuestion, name: String, minuteStep: UInt8?, hourStart: UInt8?, hourEnd: UInt8?) {
+        self.dateControl = MFDateControl(parent: parent, name: "\(name)_date", dateType: .Full)
+        self.timeControl = MFTimeControl(parent: parent, name: "\(name)_time", minuteStep: minuteStep, hourStart: hourStart, hourEnd: hourEnd)
+        super.init(parent: parent, controlType: .DateTime, name: name)
+    }
+    
+    func getHourList() -> [String] {
+        return self.timeControl.getHourList()
+    }
+    
+    func getMinuteList() -> [String] {
+        return self.timeControl.getMinuteList()
+    }
+    
+    func getDay(form: MetaForm) -> String {
+        return self.dateControl.getDay(form: form)
+    }
+    
+    func getMonth(form: MetaForm) -> String{
+        return self.dateControl.getMonth(form: form)
+    }
+    
+    func getYear(form: MetaForm) -> String{
+        return self.dateControl.getYear(form: form)
+    }
+    
+    func getMonthNames() -> [String]{
+        return self.dateControl.getMonthNames()
     }
 }
 
@@ -357,4 +370,54 @@ struct MFOptionSource {
 struct MFOptionValue {
     var code: String
     var description: String
+}
+
+class MFTelephoneAndIddControl: MFControl {
+    var maxLength: Int = 0
+    var placeholder: String?
+    var iddList: [IddCode] = []
+    
+    init(parent: MFQuestion, name: String, maxLength: Int? = 0, placeholder: String? = "") {
+        self.placeholder = placeholder
+        self.maxLength = maxLength ?? 0
+        super.init(parent: parent, controlType: .TelephoneAndIddCode, name: name)
+    }
+    
+    func getIdd(form: MetaForm) -> String {
+        let value = form.getValue(self.name)
+        return value.split(with: ":", andTakePart: 0)
+    }
+    
+    func getNumber(form: MetaForm) -> String {
+        let value = form.getValue(self.name)
+        return value.split(with: ":", andTakePart: 1)
+    }
+}
+
+struct IddCode {
+    var code: String
+    var name: String
+}
+
+class MFToggleControl: MFControl {
+    var text: String?
+    init(parent: MFQuestion, name: String, text: String? ) {
+        self.text = text
+        super.init(parent: parent, controlType: .Toggle, name: name)
+    }
+}
+
+class MFSliderControl: MFControl {
+    var text: String
+    var min: Int
+    var max: Int
+    var step: Int
+    
+    init(parent: MFQuestion, name: String, min: Int, max: Int, step: Int, text: String?) {
+        self.text = text ?? ""
+        self.min = min
+        self.max = max
+        self.step = step
+        super.init(parent: parent, controlType: .Slider, name: name)
+    }
 }
