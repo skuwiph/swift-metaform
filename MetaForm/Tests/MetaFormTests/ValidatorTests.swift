@@ -179,7 +179,30 @@ final class ValidatorTests: XCTestCase {
             XCTAssertFalse(form.isValid(false), "\(v) is invalid")
         }
     }
-    
+        
+    func testDateBetween() {
+        let form = MetaForm(name: "test", title: "Test Form")
+        _ = form
+            .addQuestion(name: "q1", caption: "Test Question")
+            .addDateControl(name: "t1", dateType: MetaFormDateType.FullDate)
+            .addValidator(MFValidator.MustBeBetween(after: "2010-10-30", before: "2010-11-5", message: "Answer must be between those dates if present"))
+        
+        // Empty should be valid (no required)
+        XCTAssertTrue(form.isValid(false))
+        
+        let valids = ["2010-10-29", "2010-11-10", "2010-10-29 20:30", "2010-11-06 12:30"]
+        for v in invalids {
+            form.setValue("t1", value: v)
+            XCTAssertFalse(form.isValid(false), "\(v) is invalid")
+        }
+        
+        let valids = ["2020-10-31 9:30", "2010-11-1 14:50", "2010-10-31", "2010-11-4 18:59"]
+        for v in valids {
+            form.setValue("t1", value: v)
+            XCTAssertTrue(form.isValid(false), "\(v) is valid")
+        }
+    }
+
     func testWordCount() {
         let form = MetaForm(name: "test", title: "Test Form")
         _ = form
@@ -203,6 +226,7 @@ final class ValidatorTests: XCTestCase {
         ("testDateTimes", testDateTimes),
         ("testDateAfter", testDateAfter),
         ("testDateBefore", testDateBefore),
+        ("testDateBetween", testDateBetween),
         ("testWordCount", testWordCount)
     ]
 }
