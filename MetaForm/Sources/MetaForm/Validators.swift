@@ -63,12 +63,32 @@ class MFValidator {
     
     static func Date(message: String) -> MFDateValidator {
         let v = MFDateValidator(type: "Date", message: message)
-        return v;
+        return v
     }
     
     static func DateTime(message: String) -> MFDateTimeValidator {
         let v = MFDateTimeValidator(type: "DateTime", message: message)
-        return v;
+        return v
+    }
+    
+    static func DateMustBeAfter(_ min: String, message: String) -> MFDateMustBeAfterValidator {
+        let v = MFDateMustBeAfterValidator(type: "MustBeAfter", message: message, value: min)
+        return v
+    }
+    
+    static func DateMustBeBefore(_ max: String, message: String) -> MFDateMustBeBeforeValidator {
+        let v = MFDateMustBeBeforeValidator(type: "MustBeBefore", message: message, value: max)
+        return v
+    }
+    
+    static func MustBeBetween(after: String, before: String, message: String) -> MFMustBeBetweenValidator {
+        let v = MFMustBeBetweenValidator(type: "MustBeBetween", message: message, min: after, max: before)
+        return v
+    }
+    
+    static func MinimumWordCount(_ count: Int, message: String) -> MFMustExceedWordCountValidator {
+        let v = MFMustExceedWordCountValidator(type: "MinimumWordCount", message: message, targetWordCount: count)
+        return v
     }
     
     static func resolve(variable: String) -> String {
@@ -198,9 +218,10 @@ class MFDateMustBeAfterValidator: MFValidator {
             let minDate = form.data.convertValueToDate(matchingValue);
 
             if date == nil || minDate == nil {
-                return valid
+                valid = false
+            } else {
+                valid = date! > minDate!;
             }
-            valid = date! > minDate!;
         }
         return valid;
     }
@@ -225,9 +246,10 @@ class MFDateMustBeBeforeValidator: MFValidator {
             let maxDate = form.data.convertValueToDate(matchingValue, timeValue: nil);
 
             if date == nil || maxDate == nil {
-                return valid
+                valid = false
+            } else {
+                valid = date! < maxDate!;
             }
-            valid = date! < maxDate!;
         }
         return valid;
     }
@@ -255,8 +277,12 @@ class MFMustBeBetweenValidator: MFValidator {
             if (control.controlType == MetaFormControlType.Date || control.controlType == MetaFormControlType.Time) {
                 valid = self.dateInRange(form: form, check: answerToCheck, after: minCheck, before: maxCheck);
             } else {
-                valid = false;
-                //valid = +answerToCheck > +minCheck && +answerToCheck < +maxCheck;
+                guard let check = Int(answerToCheck),
+                    let min = Int(minCheck),
+                    let max = Int(maxCheck) else {
+                        return false;
+                }
+                valid = check > min && check < max;
             }
         }
         return valid;
