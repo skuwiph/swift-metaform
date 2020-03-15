@@ -6,17 +6,18 @@ class MetaForm {
     var version = 1
     var dateModified = Date()
     var dataSource: String?
-    var drawType = MetaFormDrawType.SingleQuestion
+    var drawType: MetaFormDrawType = .SingleQuestion
     var allowSaves: Bool = false
     var sections: [MFSection] = []
     var questions: [MFQuestion] = []
     var data = MetaFormData()
     
-    var rules: [String: String]?
+    var rules: BusinessRules?
     
-    init(name: String, title: String) {
+    init(name: String, title: String, drawType: MetaFormDrawType? = nil) {
         self.name = name
         self.title = title
+        self.drawType = drawType ?? .SingleQuestion
     }
     
     // Initialise the form ready for first use/display
@@ -65,9 +66,12 @@ class MetaForm {
         return valid
     }
     
-    func ruleMatches(_ question: MFQuestion, rules: [String: String]?) -> Bool {
+    func ruleMatches(_ question: MFQuestion, rules: BusinessRules?) -> Bool {
+        if self.drawType == .SingleQuestion || question.ruleToMatch == nil || rules == nil {
+            return true
+        }
         
-        return true
+        return rules!.evaluateRule(question.ruleToMatch!, data: self.data)
     }
     
     func determineQuestionDisplay(question: MFQuestion, dependencies: [String]?) {
@@ -157,13 +161,13 @@ class MetaForm {
 }
 
 struct MFSection {
-    var id: UInt8
+    var id: Int
     var title: String
     var ruleToMatch: String?
 }
 
 class MFQuestion {
-    var sectionId: UInt8
+    var sectionId: Int
     var name: String
     var caption: String?
     var captionFootnote: String?
@@ -174,7 +178,7 @@ class MFQuestion {
     var available = true
     var canBeDisplayed: () -> Bool = {return true}
     
-    init(sectionId: UInt8, name: String, caption: String?) {
+    init(sectionId: Int, name: String, caption: String?) {
         self.sectionId = sectionId
         self.name = name
         self.caption = caption
@@ -234,6 +238,34 @@ class MFQuestion {
         self.pushControl(control: c)
         
         return c
+    }
+    
+    func addTelephoneAndIddCode(name: String, maxLength: Int? = nil, placeholder: String? = nil) -> MFTelephoneAndIddControl {
+        let c = MFTelephoneAndIddControl(parent: self, name: name, maxLength: maxLength, placeholder: placeholder)
+        self.pushControl(control: c)
+        return c
+    }
+    
+    func addToggleControl(name: String, text: String? = nil) -> MFToggleControl {
+        let c = MFToggleControl(parent: self, name: name, text: text)
+        self.pushControl(control: c)
+        return c
+    }
+    
+    func addSliderControl(name: String, text: String? = nil, min: Int, max: Int, step: Int) -> MFSliderControl {
+        let c = MFSliderControl(parent: self, name: name, min: min, max: max, step: step, text: text)
+        self.pushControl(control: c)
+        return c
+    }
+    
+    func setSection(_ id: Int) -> MFQuestion {
+        self.sectionId = id
+        return self
+    }
+    
+    func setDisplayRule(_ rule: String) -> MFQuestion {
+        self.ruleToMatch = rule
+        return self
     }
     
     private func pushControl(control: MFControl) {

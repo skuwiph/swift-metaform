@@ -96,11 +96,75 @@ final class MetaFormTests: XCTestCase {
         XCTAssertFalse(check2.isVariable, "Should not be a variable reference")
     }
     
+    func testDisplayRuleFalsePassesValidation() {
+        let rules = BusinessRules()
+        
+        _ = rules
+            .addRule(name: "YesNoIsYes", matchType: .MatchAny)
+            .addPart(field: "yesOrNo", comparison: .Equals, value: "Y")
+        
+        var yn = [MFOptionValue]()
+        yn.append( MFOptionValue(code: "Y", description: "Yes"))
+        yn.append( MFOptionValue(code: "N", description: "No"))
+
+        let form = MetaForm(name: "test", title: "Test Form", drawType: .EntireForm)
+        _ = form
+            .addQuestion(name: "q1", caption: "Test Question")
+            .addOptionControl(name: "yesOrNo", options: MFOptions.OptionFromList(options: yn, emptyItem: nil, expandOptions: true))
+        
+        _ = form
+            .addQuestion(name: "q2", caption: "Question to be displayed if previous is Y")
+            .setDisplayRule("YesNoIsYes")
+            .addDateControl(name: "dateInFuture", dateType: .Full)
+            .addLabel("Future date")
+            .addValidator(MFValidator.Required(message: "Please answer"))
+            .addValidator(MFValidator.Date(message: "Answer must be a valid date"))
+            .addValidator(MFValidator.DateMustBeAfter("%TODAY", message: "Must be after today"))
+        
+        form.setValue("yesOrNo", value: "N")
+        form.rules = rules
+        
+        XCTAssertTrue(form.isValid(), "Expected form to be valid")
+    }
+    
+    func testDisplayRuleTrueFailsValidation() {
+        let rules = BusinessRules()
+        
+        _ = rules
+            .addRule(name: "YesNoIsYes", matchType: .MatchAny)
+            .addPart(field: "yesOrNo", comparison: .Equals, value: "Y")
+        
+        var yn = [MFOptionValue]()
+        yn.append( MFOptionValue(code: "Y", description: "Yes"))
+        yn.append( MFOptionValue(code: "N", description: "No"))
+        
+        let form = MetaForm(name: "test", title: "Test Form", drawType: .EntireForm)
+        _ = form
+            .addQuestion(name: "q1", caption: "Test Question")
+            .addOptionControl(name: "yesOrNo", options: MFOptions.OptionFromList(options: yn, emptyItem: nil, expandOptions: true))
+        
+        _ = form
+            .addQuestion(name: "q2", caption: "Question to be displayed if previous is Y")
+            .setDisplayRule("YesNoIsYes")
+            .addDateControl(name: "dateInFuture", dateType: .Full)
+            .addLabel("Future date")
+            .addValidator(MFValidator.Required(message: "Please answer"))
+            .addValidator(MFValidator.Date(message: "Answer must be a valid date"))
+            .addValidator(MFValidator.DateMustBeAfter("%TODAY", message: "Must be after today"))
+        
+        form.setValue("yesOrNo", value: "Y")
+        form.rules = rules
+        
+        XCTAssertFalse(form.isValid(), "Expected form to be invalid")
+    }
+    
     static var allTests = [
         ("testDataExtraction", testDateExtraction),
         ("testTimeExtraction", testTimeExtraction),
         ("testTimeLists", testTimeLists),
         ("testFieldReplacement", testFieldReplacement),
-        ("testVariableReplacement", testVariableReplacement)
+        ("testVariableReplacement", testVariableReplacement),
+        ("testDisplayRuleFalsePassesValidation", testDisplayRuleFalsePassesValidation),
+        ("testDisplayRuleTrueFailsValidation", testDisplayRuleTrueFailsValidation)
     ]
 }

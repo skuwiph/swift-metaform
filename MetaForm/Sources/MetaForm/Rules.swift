@@ -47,14 +47,14 @@ class BusinessRule {
         self.parts = []
     }
     
-    func addPart(field: String, comparison: RuleComparison, value: String) -> BusinessRule {
-        let p = RulePart(fieldName: field, comparison: comparison, value: value)
+    func addPart(field: String, comparison: RuleComparison, value: String, evaluationType: ForceEvaluationType? = nil) -> BusinessRule {
+        let p = RulePart(fieldName: field, comparison: comparison, value: value, evaluationType: evaluationType)
         self.parts.append(p)
         return self
     }
     
-    func addRangePart(field: String, min: String, max: String) -> BusinessRule {
-        let p = RulePart(fieldName: field, comparison: .Between, min: min, max: max)
+    func addRangePart(field: String, min: String, max: String, evaluationType: ForceEvaluationType? = nil) -> BusinessRule {
+        let p = RulePart(fieldName: field, comparison: .Between, min: min, max: max, evaluationType: evaluationType)
         self.parts.append(p)
         return self
     }
@@ -92,12 +92,13 @@ struct RulePart: BRPRulePart {
     var min: String? = nil
     var max: String? = nil
     
-    init(fieldName: String, comparison: RuleComparison, value: String? = nil, min: String? = nil, max: String? = nil) {
+    init(fieldName: String, comparison: RuleComparison, value: String? = nil, min: String? = nil, max: String? = nil, evaluationType: ForceEvaluationType? = nil) {
         self.fieldName = fieldName
         self.comparison = comparison
         self.value = value
         self.min = min
         self.max = max
+        self.forceEvaluationAsType = evaluationType ?? .Default
     }
     
     func evaluate(data: MetaFormData) -> Bool {
@@ -133,10 +134,8 @@ struct RulePart: BRPRulePart {
         case .Default:
             return comparedValue.elementsEqual(self.value!)
         case .Bool:
-            guard let nv = Bool(comparedValue),
-                let sv = Bool(self.value!) else {
-                    return false
-            }
+            let nv = self.convertValueToBool(comparedValue)
+            let sv = self.convertValueToBool(self.value!)
             return nv == sv
         case .Numeric:
             guard let nv = Int(comparedValue), let sv = Int(self.value!) else {
@@ -217,6 +216,13 @@ struct RulePart: BRPRulePart {
             return nv > min && nv < max
         }
         
+        return false
+    }
+    
+    private func convertValueToBool(_ value: String) -> Bool {
+        if value.uppercased() == "Y" || value.uppercased() == "TRUE" || value == "1" {
+            return true
+        }
         return false
     }
 }
