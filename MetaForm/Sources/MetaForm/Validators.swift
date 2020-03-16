@@ -114,7 +114,8 @@ class MFValidatorAsync: MFValidator {
     }
     
     override func isValidAsync(form: MetaForm, control: MFControl, completion: @escaping AsyncValidationResult) {
-    
+        debugPrint("isValidAsync")
+        
         dataTask?.cancel()
     
         guard let serviceUrl = URL(string: url) else {
@@ -133,6 +134,8 @@ class MFValidatorAsync: MFValidator {
         
         request.httpBody = body
         
+        debugPrint("Request: \(request)")
+        
         dataTask = defaultSession.dataTask(with: request) { data, response, error in
             defer {
                 self.dataTask = nil
@@ -150,6 +153,7 @@ class MFValidatorAsync: MFValidator {
             do {
                 let data = try JSONDecoder().decode(MFAsyncValidationResponse.self, from: data)
                 DispatchQueue.main.async {
+                    debugPrint("got data from \(self.url): \(data)")
                     completion( data.valid, self.message)
                 }
             } catch let error {
@@ -157,7 +161,11 @@ class MFValidatorAsync: MFValidator {
             }
         }
         dataTask?.resume()
-        
+    }
+    
+    static func AsyncValidator(url: String, message: String) -> MFValidatorAsync {
+        let v = MFValidatorAsync(type: "Async", message: message, url: url)
+        return v
     }
 }
 

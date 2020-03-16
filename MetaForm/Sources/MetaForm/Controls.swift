@@ -70,7 +70,7 @@ class MFControl {
     
     func isValid(form: MetaForm, updateStatus: Bool = true) -> Bool {
         var valid = true
-        
+        debugPrint("In isValid")
         if self.validators != nil {
             for v in self.validators! {
                 if !v.isValid(form: form, control: self) {
@@ -84,17 +84,24 @@ class MFControl {
             }
         }
         
+        if valid {
+            debugPrint("Passed sync validators, how about async?")
+            self.isValidAsync(form: form, updateStatus: updateStatus)
+        }
+        
         return valid
     }
     
     func isValidAsync(form: MetaForm, updateStatus: Bool) {
         if self.validatorsAsync != nil {
+            debugPrint("We have async validators")
             for v in self.validatorsAsync! {
                 debugPrint("Validating \(v.type)")
                 v.isValidAsync(form: form, control: self) { [weak self] valid, message in
                     if updateStatus {
                         self?.inError = !valid
                     }
+                    debugPrint("valid? \(valid)")
                     self?.errorMessage = valid ? nil : message
                 }
             }
