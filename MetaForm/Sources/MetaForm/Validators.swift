@@ -7,6 +7,8 @@
 
 import Foundation
 
+typealias AsyncValidationResult = ( Bool, String ) -> Void
+
 class MFValidator {
     var type: String
     var message: String
@@ -20,6 +22,10 @@ class MFValidator {
     
     func isValid(form: MetaForm, control: MFControl) -> Bool {
         return true
+    }
+    
+    func isValidAsync(form: MetaForm, control: MFControl, completion: @escaping AsyncValidationResult) {
+    
     }
     
     func checkForReference(value: String) {
@@ -96,8 +102,67 @@ class MFValidator {
     }
 }
 
-class MFValidatorAsync {
+class MFValidatorAsync: MFValidator {
+    var url: String
     
+    let defaultSession = URLSession(configuration: .default)
+    var dataTask: URLSessionDataTask?
+    
+    init(type: String, message: String, url: String) {
+        self.url = url
+        super.init(type: type, message: message)
+    }
+    
+    override func isValidAsync(form: MetaForm, control: MFControl, completion: @escaping AsyncValidationResult) {
+    
+        dataTask?.cancel()
+    
+        guard let serviceUrl = URL(string: url) else {
+            debugPrint("Failure at step 1")
+            return
+        }
+        
+        let params = ["check": form.getValue(control.name)]
+        var request = URLRequest(url: serviceUrl)
+        request.httpMethod = "POST"
+        request.setValue("Application/JSON", forHTTPHeaderField: "Content-Type")
+        guard let body = try? JSONSerialization.data(withJSONObject: params, options: []) else {
+            debugPrint("Failure at step 2")
+            return
+        }
+        
+        request.httpBody = body
+        
+        dataTask = defaultSession.dataTask(with: request) { data, response, error in
+            defer {
+                self.dataTask = nil
+            }
+            
+            guard let data = data else {
+                if let error = error {
+                    debugPrint("Failed at step 3: error: \(error.localizedDescription)")
+                } else {
+                    debugPrint("Failed at step 3 with no error")
+                }
+                return
+            }
+            
+            do {
+                let data = try JSONDecoder().decode(MFAsyncValidationResponse.self, from: data)
+                DispatchQueue.main.async {
+                    completion( data.valid, self.message)
+                }
+            } catch let error {
+                debugPrint(error.localizedDescription)
+            }
+        }
+        dataTask?.resume()
+        
+    }
+}
+
+struct MFAsyncValidationResponse: Codable {
+    var valid: Bool
 }
 
 // Implementations of MFValidator

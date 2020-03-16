@@ -226,7 +226,7 @@ class MFQuestion {
     
     func addOptionControl(name: String, options: MFOptions, layout: ControlLayoutStyle = ControlLayoutStyle.Vertical) -> MFOptionControl {
         let c = MFOptionControl(parent: self, name: name, controlType: MetaFormControlType.Option, options: options, optionLayout: layout)
-        
+        c.checkDependencies()
         self.pushControl(control: c)
         
         return c
@@ -234,7 +234,8 @@ class MFQuestion {
     
     func addOptionMultiControl(name: String, options: MFOptions, layout: ControlLayoutStyle = ControlLayoutStyle.Vertical) -> MFOptionMultiControl {
         let c = MFOptionMultiControl(parent: self, name: name, controlType: MetaFormControlType.OptionMulti, options: options, optionLayout: layout)
-        
+        c.checkDependencies()
+
         self.pushControl(control: c)
         
         return c

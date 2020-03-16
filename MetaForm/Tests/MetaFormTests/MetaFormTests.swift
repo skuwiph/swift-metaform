@@ -158,6 +158,17 @@ final class MetaFormTests: XCTestCase {
         XCTAssertFalse(form.isValid(), "Expected form to be invalid")
     }
     
+    func testFieldStringFromUrl() {
+        let form = MetaForm(name: "test", title: "Test Form", drawType: .EntireForm)
+        _ = form
+            .addQuestion(name: "q1", caption: "Test Question")
+            .addOptionControl(name: "yesOrNo", options: MFOptions.OptionFromUrl(url: "https://localhost:3000/country/[countryCode]/regions", emptyItem: nil))
+        
+        let c = form.getQuestion(name: "q1")!.controls[0] as! MFOptionControl
+        XCTAssertTrue(c.dependencies!.count == 1, "Expecting to have a field dependency")
+        XCTAssertTrue(c.dependencies![0] == "countryCode", "Expected countryCode as a dependency")
+    }
+    
     static var allTests = [
         ("testDataExtraction", testDateExtraction),
         ("testTimeExtraction", testTimeExtraction),
@@ -165,6 +176,7 @@ final class MetaFormTests: XCTestCase {
         ("testFieldReplacement", testFieldReplacement),
         ("testVariableReplacement", testVariableReplacement),
         ("testDisplayRuleFalsePassesValidation", testDisplayRuleFalsePassesValidation),
-        ("testDisplayRuleTrueFailsValidation", testDisplayRuleTrueFailsValidation)
+        ("testDisplayRuleTrueFailsValidation", testDisplayRuleTrueFailsValidation),
+        ("testFieldStringFromUrl", testFieldStringFromUrl)
     ]
 }

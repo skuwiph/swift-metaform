@@ -54,10 +54,24 @@ class MFControl {
         return self
     }
     
+    func addValidatorAsync(_ v: MFValidatorAsync) -> MFControl {
+        if self.validatorsAsync == nil {
+            self.validatorsAsync = []
+        }
+        
+        self.validatorsAsync!.append(v)
+        
+        if let references = v.referencesField {
+            self.references = references
+        }
+        
+        return self
+    }
+    
     func isValid(form: MetaForm, updateStatus: Bool = true) -> Bool {
         var valid = true
         
-        if (self.validators != nil) {
+        if self.validators != nil {
             for v in self.validators! {
                 if !v.isValid(form: form, control: self) {
                     valid = false
@@ -69,6 +83,20 @@ class MFControl {
         }
         
         return valid
+    }
+    
+    func isValidAsync(form: MetaForm, updateStatus: Bool) {
+        if self.validatorsAsync != nil {
+            for v in self.validatorsAsync! {
+                debugPrint("Validating \(v.type)")
+                v.isValidAsync(form: form, control: self) { [weak self] valid, message in
+                    if updateStatus {
+                        self?.inError = !valid
+                    }
+                    self?.errorMessage = valid ? nil : message
+                }
+            }
+        }
     }
     
     func addReferencedBy(controlName: String) {
@@ -146,6 +174,41 @@ class MFOptionControlBase: MFControl {
     var optionUrl: String {
         return self.options.optionSource!.url
     }
+    
+    func checkDependencies() {
+        // check options for referencing
+        if !hasUrl {
+            return
+        }
+        
+        let r = urlFieldReferences()
+        for referencedField in r {
+            if dependencies == nil {
+                dependencies = []
+            }
+            
+            dependencies!.append(referencedField)
+        }
+    }
+    
+    func urlFieldReferences() -> [String] {
+        var s = [String]()
+        
+        if hasUrl {
+            let baseUrl = optionUrl
+            let splits = baseUrl.split(separator: "/")
+            if splits.count > 3 {
+                for i in 3..<splits.endIndex {
+                    let f = MetaForm.isFieldReference(value: String(splits[i]))
+                    if f.isField {
+                        s.append(f.fieldName!)
+                    }
+                }
+            }
+        }
+        
+        return s
+    }
 }
 
 class MFOptionControl: MFOptionControlBase {
@@ -174,7 +237,6 @@ class MFDateControl: MFControl, MFPDate {
     func getDay(form: MetaForm) -> String {
         return MFDateControl.getDayFrom(form.getValue(self.name))
     }
-
     
     func getMonth(form: MetaForm) -> String {
         return MFDateControl.getMonthFrom(form.getValue(self.name))
