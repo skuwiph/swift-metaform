@@ -240,20 +240,20 @@ final class ValidatorTests: XCTestCase {
         XCTAssertTrue(form.isValid(false))
     }
     
-    func testAsync() {
-        let form = MetaForm(name: "test", title: "Test Form")
-        _ = form
-            .addQuestion(name: "q1", caption: "Test Question")
-            .addTextControl(name: "t1", textType: MetaFormTextType.Email)
-            .addValidator(MFValidator.Required(message: "Answer is required"))
-            .addValidatorAsync(MFValidatorAsync.AsyncValidator(url: "http://localhost:3000/validate/email", message: "Invalid email"))
-        
-        XCTAssertFalse(form.isValid(false))
-        
-        form.setValue("t1", value: "fail@example.com")
-        
-        XCTAssertTrue(form.isValid(false))
-    }
+//    func testAsync() {
+//        let form = MetaForm(name: "test", title: "Test Form")
+//        _ = form
+//            .addQuestion(name: "q1", caption: "Test Question")
+//            .addTextControl(name: "t1", textType: MetaFormTextType.Email)
+//            .addValidator(MFValidator.Required(message: "Answer is required"))
+//            .addValidatorAsync(MFValidatorAsync.AsyncValidator(url: "http://localhost:3000/validate/email", message: "Invalid email"))
+//        
+//        XCTAssertFalse(form.isValid(false))
+//        
+//        form.setValue("t1", value: "fail@example.com")
+//        
+//        XCTAssertTrue(form.isValid(false))
+//    }
     
     static var allTests = [
         ("testRequired", testRequired),
