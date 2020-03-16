@@ -18,7 +18,12 @@ class MetaFormData {
     
     func setValue(_ name: String, value: String) {
         let fieldName = self.correctFieldName(name: name)
+        
+        let oldValue = getValue(name)
         self.data[fieldName] = value
+        
+        let fdc = FormDataChanged(fieldName: name, oldValue: oldValue, newValue: value)
+        NotificationCenter.default.post(name: NSNotification.Name.dataWasChanged, object: self, userInfo: [ "data" : fdc])
     }
     
     func getValueAsDate(_ name: String) -> Date? {

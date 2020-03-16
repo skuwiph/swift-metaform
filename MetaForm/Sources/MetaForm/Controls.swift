@@ -77,6 +77,8 @@ class MFControl {
                     valid = false
                     self.errorMessage = v.message
                     
+                    NotificationCenter.default.post(name: Notification.Name.controlValidityDidChange, object: self, userInfo: ["data" : ControlValidityChanged(controlName: self.name, validator: v.type, isValid: valid)])
+                    
                     break
                 }
             }
@@ -208,6 +210,44 @@ class MFOptionControlBase: MFControl {
         }
         
         return s
+    }
+    
+    func urlForService(form: MetaForm, control: MFControl) -> String? {
+        if !hasUrl {
+            return nil
+        }
+        
+        let baseUrl = optionUrl
+        if !baseUrl.contains("[") {
+            return baseUrl
+        }
+        
+        var url: String = ""
+        let splits = baseUrl.split(separator: "/")
+        if splits.count > 1 {
+            url = "\(splits[0])//\(splits[1])/"
+        }
+        
+        for i in 2..<splits.endIndex {
+            let f = MetaForm.isFieldReference(value: String(splits[i]))
+            if f.isField {
+                let value = form.getValue(f.fieldName!)
+                if !value.isEmpty {
+                    url += "\(value)/"
+                } else {
+                    debugPrint("Value \(String(describing: f.fieldName)) wasn't found")
+                    return nil
+                }
+            } else {
+                url += "\(splits[i])/"
+            }
+        }
+        
+        if url.suffix(1) == "/" {
+            return String(url[..<url.index(url.endIndex, offsetBy: -1)])
+        }
+        
+        return url
     }
 }
 

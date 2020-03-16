@@ -18,7 +18,7 @@ class BusinessRules {
             // This rule has already been added
             // TODO(Ian): throw an exception. Although
             // I hate exceptions
-            print("Rule \(name) has already been added")
+            debugPrint("Rule \(name) has already been added")
         }
         let r = BusinessRule(name: name, matchType: matchType)
         self.rules[r.name] = r
@@ -27,11 +27,11 @@ class BusinessRules {
     
     func evaluateRule(_ name: String, data: MetaFormData) -> Bool {
         if let r = self.rules[name] {
-            print("Evaluating rule: \(name)")
+            debugPrint("Evaluating rule: \(name)")
             return r.evaluate(data: data)
         }
         
-        print("\(name) was not found!")
+        debugPrint("\(name) was not found!")
         return false
     }
 }
@@ -104,12 +104,10 @@ struct RulePart: BRPRulePart {
     func evaluate(data: MetaFormData) -> Bool {
         var success = false
         
-        
-        
         // Get the value to compare against
         let comparedValue = data.getValue(self.fieldName)
         
-        print("evaluating \(comparedValue) against \(String(describing: self.value))")
+        debugPrint("evaluating \(comparedValue) against \(String(describing: self.value))")
         
         switch self.comparison {
         case .Equals:

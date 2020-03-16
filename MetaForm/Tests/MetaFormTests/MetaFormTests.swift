@@ -167,6 +167,30 @@ final class MetaFormTests: XCTestCase {
         let c = form.getQuestion(name: "q1")!.controls[0] as! MFOptionControl
         XCTAssertTrue(c.dependencies!.count == 1, "Expecting to have a field dependency")
         XCTAssertTrue(c.dependencies![0] == "countryCode", "Expected countryCode as a dependency")
+        
+        form.setValue("countryCode", value: "UK")
+        let url = c.urlForService(form: form, control: c)
+        XCTAssertTrue(url == "https://localhost:3000/country/UK/regions", "Expected a different url than \(String(describing: url))!")
+    }
+    
+    func testFormDataDelegate() {
+        var yn = [MFOptionValue]()
+        yn.append( MFOptionValue(code: "Y", description: "Yes"))
+        yn.append( MFOptionValue(code: "N", description: "No"))
+        
+        let form = MetaForm(name: "test", title: "Test Form", drawType: .EntireForm)
+        _ = form
+            .addQuestion(name: "q1", caption: "Test Question")
+            .addOptionControl(name: "yesOrNo", options: MFOptions.OptionFromList(options: yn, emptyItem: nil, expandOptions: true))
+        
+        let testDelegate = TestFormDelegate()
+        form.setValue("yesOrNo", value: "Y")
+        
+        XCTAssertTrue(testDelegate.lastChangedValue == "yesOrNo", "Last changed field wasn't correct")
+        XCTAssertTrue(testDelegate.newValue == "Y", "Expect to see the new value")
+
+        form.setValue("yesOrNo", value: "N")
+        XCTAssertTrue(testDelegate.newValue == "N", "Expect to see the new value")
     }
     
     static var allTests = [
@@ -177,6 +201,33 @@ final class MetaFormTests: XCTestCase {
         ("testVariableReplacement", testVariableReplacement),
         ("testDisplayRuleFalsePassesValidation", testDisplayRuleFalsePassesValidation),
         ("testDisplayRuleTrueFailsValidation", testDisplayRuleTrueFailsValidation),
-        ("testFieldStringFromUrl", testFieldStringFromUrl)
+        ("testFieldStringFromUrl", testFieldStringFromUrl),
+        ("testFormDataDelegate", testFormDataDelegate)
     ]
+}
+
+class TestFormDelegate {
+    var lastChangedValue: String
+    var newValue: String?
+    
+    init() {
+        self.lastChangedValue = ""
+        self.newValue = nil
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(valueWasChanged), name: Notification.Name.dataWasChanged, object: nil)
+    }
+    
+    @objc func valueWasChanged(notification: Notification) {
+        if let n = notification.userInfo as? [String: Any] {
+            if let fdc = n["data"] as? FormDataChanged {
+                print("Field \(fdc.fieldName) Changed from \(String(describing: fdc.oldValue)) to \(String(describing: fdc.newValue))")
+                self.lastChangedValue = fdc.fieldName
+                self.newValue = fdc.newValue
+            }
+        }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
