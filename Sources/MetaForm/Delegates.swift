@@ -7,19 +7,19 @@
 
 import Foundation
 
-struct FormDataChanged {
+public struct FormDataChanged {
     var fieldName: String
     var oldValue: String?
     var newValue: String?
 }
 
-struct ControlValidityChanged {
+public struct ControlValidityChanged {
     var controlName: String
     var validator: String
     var isValid: Bool
 }
 
-extension Notification.Name {
+public extension Notification.Name {
     static let dataWasChanged = Notification.Name("mfDataChanged")
     static let controlValidityDidChange = Notification.Name("mfcontrolValidityDidChange")
 }

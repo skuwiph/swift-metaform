@@ -6,7 +6,7 @@
 
 import Foundation
 
-class BusinessRules {
+public class BusinessRules {
     var rules: [String: BusinessRule] = [:]
     
     init() {
@@ -36,7 +36,7 @@ class BusinessRules {
     }
 }
 
-class BusinessRule {
+public class BusinessRule {
     var name: String
     var matchType: RuleMatchType
     var parts: [RulePart]
@@ -79,11 +79,11 @@ class BusinessRule {
 
 }
 
-protocol BRPRulePart {
+public protocol BRPRulePart {
     func evaluate(data: MetaFormData) -> Bool
 }
 
-struct RulePart: BRPRulePart {
+public struct RulePart: BRPRulePart {
     var fieldName: String
     var comparison: RuleComparison
     var forceEvaluationAsType: ForceEvaluationType = .Default
@@ -101,7 +101,7 @@ struct RulePart: BRPRulePart {
         self.forceEvaluationAsType = evaluationType ?? .Default
     }
     
-    func evaluate(data: MetaFormData) -> Bool {
+    public func evaluate(data: MetaFormData) -> Bool {
         var success = false
         
         // Get the value to compare against
@@ -225,12 +225,12 @@ struct RulePart: BRPRulePart {
     }
 }
 
-enum RuleMatchType {
+public enum RuleMatchType {
     case MatchAll
     case MatchAny
 }
 
-enum RuleComparison: Int {
+public enum RuleComparison: Int {
     case Equals = 1
     case NotEquals
     case LessThan
@@ -239,7 +239,7 @@ enum RuleComparison: Int {
     case Between
 }
 
-enum ForceEvaluationType {
+public enum ForceEvaluationType {
     case Default
     case Bool
     case DateTime

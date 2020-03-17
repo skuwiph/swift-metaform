@@ -20,16 +20,16 @@ class MFValidator {
         self.message = message
     }
     
-    func isValid(form: MetaForm, control: MFControl) -> Bool {
+    func isValid(form: MFForm, control: MFControl) -> Bool {
         return true
     }
     
-    func isValidAsync(form: MetaForm, control: MFControl, completion: @escaping AsyncValidationResult) {
+    func isValidAsync(form: MFForm, control: MFControl, completion: @escaping AsyncValidationResult) {
     
     }
     
     func checkForReference(value: String) {
-        let check = MetaForm.isFieldReference(value: value)
+        let check = MFForm.isFieldReference(value: value)
         if check.isField {
             if self.referencesField == nil {
                 self.referencesField = []
@@ -40,8 +40,8 @@ class MFValidator {
     }
     
     func getAnswerForControl(answers: MetaFormData, valueToCheck: String) -> String {
-        let f = MetaForm.isFieldReference(value: valueToCheck)
-        let v = MetaForm.isVariableReference(value: valueToCheck)
+        let f = MFForm.isFieldReference(value: valueToCheck)
+        let v = MFForm.isVariableReference(value: valueToCheck)
         
         if f.isField {
             return answers.getValue(f.fieldName!)
@@ -113,7 +113,7 @@ class MFValidatorAsync: MFValidator {
         super.init(type: type, message: message)
     }
     
-    override func isValidAsync(form: MetaForm, control: MFControl, completion: @escaping AsyncValidationResult) {
+    override func isValidAsync(form: MFForm, control: MFControl, completion: @escaping AsyncValidationResult) {
         debugPrint("isValidAsync")
         
         dataTask?.cancel()
@@ -176,7 +176,7 @@ struct MFAsyncValidationResponse: Codable {
 // Implementations of MFValidator
 
 class MFValueRequired: MFValidator {
-    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+    override func isValid(form: MFForm, control: MFControl) -> Bool {
         var valid = false
 
         // Does the control have a value?
@@ -206,7 +206,7 @@ class MFAnswerMustMatch: MFValidator {
         super.init(type: type, message: message)
     }
 
-    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+    override func isValid(form: MFForm, control: MFControl) -> Bool {
         var valid = false;
 
         // the value for 'match' must equal the value
@@ -224,7 +224,7 @@ class MFEmailValidator: MFValidator {
     // Validates according to the AngularJS Email Validator Regular Expression
     // See: https://github.com/ODAVING/angular/commit/10c9f4cb2016fc070bc7626d2736d9c5b9166989
     // For clarification
-    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+    override func isValid(form: MFForm, control: MFControl) -> Bool {
         let pattern = "(?:[a-zA-Z0-9!#$%\\&'*+/=?\\^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%\\&'*+/=?\\^_`{|}"
             + "~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\"
             + "x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-"
@@ -245,7 +245,7 @@ class MFEmailValidator: MFValidator {
 
 // Date validation
 class MFDateValidator: MFValidator {
-    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+    override func isValid(form: MFForm, control: MFControl) -> Bool {
         var valid = true;
 
         let value = form.getValue(control.name);
@@ -259,7 +259,7 @@ class MFDateValidator: MFValidator {
 }
 
 class MFDateTimeValidator: MFValidator {
-    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+    override func isValid(form: MFForm, control: MFControl) -> Bool {
         var valid = true;
 
         let value = form.getValue(control.name);
@@ -280,7 +280,7 @@ class MFDateMustBeAfterValidator: MFValidator {
         super.init(type: type, message: message)
     }
     
-    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+    override func isValid(form: MFForm, control: MFControl) -> Bool {
         var valid = true;
 
         let answerToCheck = form.getValue(control.name);
@@ -308,7 +308,7 @@ class MFDateMustBeBeforeValidator: MFValidator {
         super.init(type: type, message: message)
     }
     
-    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+    override func isValid(form: MFForm, control: MFControl) -> Bool {
         var valid = true;
 
         let answerToCheck = form.getValue(control.name);
@@ -338,7 +338,7 @@ class MFMustBeBetweenValidator: MFValidator {
         super.init(type: type, message: message)
     }
 
-    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+    override func isValid(form: MFForm, control: MFControl) -> Bool {
         var valid = true;
 
         let answerToCheck = form.getValue(control.name)
@@ -354,7 +354,7 @@ class MFMustBeBetweenValidator: MFValidator {
         return valid
     }
 
-    private func dateInRange(form: MetaForm, control: MFControl) -> Bool {
+    private func dateInRange(form: MFForm, control: MFControl) -> Bool {
         var valid = true;
         let minCheck = self.getAnswerForControl(answers: form.data, valueToCheck: self.min)
         let maxCheck = self.getAnswerForControl(answers: form.data, valueToCheck: self.max)
@@ -372,7 +372,7 @@ class MFMustBeBetweenValidator: MFValidator {
         return valid;
     }
     
-    private func numericInRange(form: MetaForm, answerToCheck: String) -> Bool {
+    private func numericInRange(form: MFForm, answerToCheck: String) -> Bool {
         var valid = true;
         
         let minCheck = self.getAnswerForControl(answers: form.data, valueToCheck: self.min)
@@ -398,7 +398,7 @@ class MFMustExceedWordCountValidator: MFValidator {
         super.init(type: type, message: message)
     }
     
-    override func isValid(form: MetaForm, control: MFControl) -> Bool {
+    override func isValid(form: MFForm, control: MFControl) -> Bool {
         var valid = false;
 
         let answerToCheck = form.getValue(control.name);

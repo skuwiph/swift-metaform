@@ -7,7 +7,7 @@
 
 import Foundation
 
-class MetaFormData {
+public class MetaFormData {
     private var data = [String: String]()
     private var forceLowerCase = false
     

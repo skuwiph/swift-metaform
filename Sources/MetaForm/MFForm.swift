@@ -1,6 +1,6 @@
 import Foundation
 
-class MetaForm {
+public class MFForm {
     var name: String
     var title: String
     var version = 1
@@ -160,13 +160,13 @@ class MetaForm {
     }
 }
 
-struct MFSection {
+public struct MFSection {
     var id: Int
     var title: String
     var ruleToMatch: String?
 }
 
-class MFQuestion {
+public class MFQuestion {
     var sectionId: Int
     var name: String
     var caption: String?
@@ -184,7 +184,7 @@ class MFQuestion {
         self.caption = caption
     }
     
-    func isValid(_ form: MetaForm, updateStatus: Bool) -> Bool {
+    func isValid(_ form: MFForm, updateStatus: Bool) -> Bool {
         var valid = true
         
         for c in self.controls {
@@ -275,7 +275,7 @@ class MFQuestion {
     }
 }
 
-struct MFAnimation {
+public struct MFAnimation {
     var event: String
     var name: String
 }

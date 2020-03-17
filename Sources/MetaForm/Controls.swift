@@ -7,7 +7,7 @@
 
 import Foundation
 
-class MFControl {
+public class MFControl {
     var controlType: MetaFormControlType
     var controlId: String
     var name: String
@@ -68,7 +68,7 @@ class MFControl {
         return self
     }
     
-    func isValid(form: MetaForm, updateStatus: Bool = true) -> Bool {
+    func isValid(form: MFForm, updateStatus: Bool = true) -> Bool {
         var valid = true
         debugPrint("In isValid")
         if self.validators != nil {
@@ -92,7 +92,7 @@ class MFControl {
         return valid
     }
     
-    func isValidAsync(form: MetaForm, updateStatus: Bool) {
+    func isValidAsync(form: MFForm, updateStatus: Bool) {
         if self.validatorsAsync != nil {
             debugPrint("We have async validators")
             for v in self.validatorsAsync! {
@@ -123,7 +123,7 @@ class MFLabel: MFControl {
         super.init(parent: parent, controlType: .Label, name: name)
     }
 
-    override func isValid(form: MetaForm, updateStatus: Bool = true) -> Bool {
+    override func isValid(form: MFForm, updateStatus: Bool = true) -> Bool {
         return true;
     }
 }
@@ -136,7 +136,7 @@ class MFHtmlTextControl: MFControl {
         super.init(parent: parent, controlType: .Html, name: name)
     }
 
-    override func isValid(form: MetaForm, updateStatus: Bool = true) -> Bool {
+    override func isValid(form: MFForm, updateStatus: Bool = true) -> Bool {
         return true;
     }
 }
@@ -208,7 +208,7 @@ class MFOptionControlBase: MFControl {
             let splits = baseUrl.split(separator: "/")
             if splits.count > 3 {
                 for i in 3..<splits.endIndex {
-                    let f = MetaForm.isFieldReference(value: String(splits[i]))
+                    let f = MFForm.isFieldReference(value: String(splits[i]))
                     if f.isField {
                         s.append(f.fieldName!)
                     }
@@ -219,7 +219,7 @@ class MFOptionControlBase: MFControl {
         return s
     }
     
-    func urlForService(form: MetaForm, control: MFControl) -> String? {
+    func urlForService(form: MFForm, control: MFControl) -> String? {
         if !hasUrl {
             return nil
         }
@@ -236,7 +236,7 @@ class MFOptionControlBase: MFControl {
         }
         
         for i in 2..<splits.endIndex {
-            let f = MetaForm.isFieldReference(value: String(splits[i]))
+            let f = MFForm.isFieldReference(value: String(splits[i]))
             if f.isField {
                 let value = form.getValue(f.fieldName!)
                 if !value.isEmpty {
@@ -267,9 +267,9 @@ class MFOptionMultiControl: MFOptionControlBase {
 }
 
 protocol MFPDate {
-    func getDay(form: MetaForm) -> String
-    func getMonth(form: MetaForm) -> String
-    func getYear(form: MetaForm) -> String
+    func getDay(form: MFForm) -> String
+    func getMonth(form: MFForm) -> String
+    func getYear(form: MFForm) -> String
     func getMonthNames() -> [String]
 }
 
@@ -281,15 +281,15 @@ class MFDateControl: MFControl, MFPDate {
         super.init(parent: parent, controlType: .Date, name: name )
     }
 
-    func getDay(form: MetaForm) -> String {
+    func getDay(form: MFForm) -> String {
         return MFDateControl.getDayFrom(form.getValue(self.name))
     }
     
-    func getMonth(form: MetaForm) -> String {
+    func getMonth(form: MFForm) -> String {
         return MFDateControl.getMonthFrom(form.getValue(self.name))
     }
     
-    func getYear(form: MetaForm) -> String {
+    func getYear(form: MFForm) -> String {
         return MFDateControl.getYearFrom(form.getValue(self.name))
     }
     
@@ -435,15 +435,15 @@ class MFDateTimeControl: MFControl, MFPTime, MFPDate {
         return self.timeControl.getMinuteList()
     }
     
-    func getDay(form: MetaForm) -> String {
+    func getDay(form: MFForm) -> String {
         return self.dateControl.getDay(form: form)
     }
     
-    func getMonth(form: MetaForm) -> String{
+    func getMonth(form: MFForm) -> String{
         return self.dateControl.getMonth(form: form)
     }
     
-    func getYear(form: MetaForm) -> String{
+    func getYear(form: MFForm) -> String{
         return self.dateControl.getYear(form: form)
     }
     
@@ -476,7 +476,7 @@ struct MFOptionSource {
     var url: String
 }
 
-struct MFOptionValue {
+public struct MFOptionValue {
     var code: String
     var description: String
 }
@@ -492,18 +492,18 @@ class MFTelephoneAndIddControl: MFControl {
         super.init(parent: parent, controlType: .TelephoneAndIddCode, name: name)
     }
     
-    func getIdd(form: MetaForm) -> String {
+    func getIdd(form: MFForm) -> String {
         let value = form.getValue(self.name)
         return value.split(with: ":", andTakePart: 0)
     }
     
-    func getNumber(form: MetaForm) -> String {
+    func getNumber(form: MFForm) -> String {
         let value = form.getValue(self.name)
         return value.split(with: ":", andTakePart: 1)
     }
 }
 
-struct IddCode {
+public struct IddCode {
     var code: String
     var name: String
 }

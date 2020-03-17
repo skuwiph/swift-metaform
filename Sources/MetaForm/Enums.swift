@@ -8,18 +8,18 @@
 import Foundation
 
 
-enum MetaFormDrawType {
+public enum MetaFormDrawType {
     case SingleQuestion
     case EntireSection
     case EntireForm
 }
 
-enum ControlLayoutStyle {
+public enum ControlLayoutStyle {
     case Vertical
     case Horizontal
 }
 
-enum MetaFormControlType {
+public enum MetaFormControlType {
     case Label
     case Html
     case Text
@@ -33,7 +33,7 @@ enum MetaFormControlType {
     case Slider
 }
 
-enum MetaFormTextType {
+public enum MetaFormTextType {
     case SingleLine
     case MultiLine
     case Password
@@ -44,7 +44,7 @@ enum MetaFormTextType {
     case Numeric
 }
 
-enum MetaFormDateType {
+public enum MetaFormDateType {
     case Full
     case MonthYear
 }
