@@ -1,2 +1,3 @@
-# swift-metaform
-Swift MetaForm Package
+# MetaForm
+
+A description of this package.
