@@ -132,6 +132,11 @@ public class MFForm {
         return nil
     }
     
+    public static func createSimpleFormWith(name: String, title: String) -> MFForm {
+        let f = MFForm(name: name, title: title, drawType: .SingleQuestion)
+        return f
+    }
+    
     static func isFieldReference(value: String) -> (isField: Bool, fieldName: String?) {
         if value.contains("[") {
             return ( isField: true, fieldName: getFieldName(from: value))
