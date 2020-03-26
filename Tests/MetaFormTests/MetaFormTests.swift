@@ -4,7 +4,7 @@ import XCTest
 final class MetaFormTests: XCTestCase {
     
     func testDateExtraction() {
-        let form = MetaForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form")
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addDateControl(name: "d1", dateType: MetaFormDateType.Full)
@@ -29,7 +29,7 @@ final class MetaFormTests: XCTestCase {
     }
     
     func testTimeExtraction() {
-        let form = MetaForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form")
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTimeControl(name: "t1", minuteStep: 15, hourStart: 8, hourEnd: 20)
@@ -55,7 +55,7 @@ final class MetaFormTests: XCTestCase {
     }
     
     func testTimeLists() {
-        let form = MetaForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form")
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTimeControl(name: "t1", minuteStep: 15, hourStart: 8, hourEnd: 20)
@@ -73,26 +73,26 @@ final class MetaFormTests: XCTestCase {
     }
     
     func testFieldReplacement() {
-        let test = MetaForm.getFieldName(from: "[field]")
+        let test = MFForm.getFieldName(from: "[field]")
         XCTAssertTrue(test == "field", "Expected 'field' not \(test)")
         
-        let check = MetaForm.isFieldReference(value: "[myField]")
+        let check = MFForm.isFieldReference(value: "[myField]")
         XCTAssertTrue(check.isField, "Should be a field reference")
         XCTAssertTrue(check.fieldName == "myField", "Should have extracted the correct field")
 
-        let check2 = MetaForm.isFieldReference(value: "value")
+        let check2 = MFForm.isFieldReference(value: "value")
         XCTAssertFalse(check2.isField, "Should not be a field reference")
     }
 
     func testVariableReplacement() {
-        let test = MetaForm.getVariable(from: "%TODAY")
+        let test = MFForm.getVariable(from: "%TODAY")
         XCTAssertTrue(test == "TODAY", "Expected 'TODAY' not \(test)")
         
-        let check = MetaForm.isVariableReference(value: "%TODAY")
+        let check = MFForm.isVariableReference(value: "%TODAY")
         XCTAssertTrue(check.isVariable, "Should be a variable reference")
         XCTAssertTrue(check.variableName == "TODAY", "Should have extracted the correct variable")
         
-        let check2 = MetaForm.isVariableReference(value: "value")
+        let check2 = MFForm.isVariableReference(value: "value")
         XCTAssertFalse(check2.isVariable, "Should not be a variable reference")
     }
     
@@ -107,7 +107,7 @@ final class MetaFormTests: XCTestCase {
         yn.append( MFOptionValue(code: "Y", description: "Yes"))
         yn.append( MFOptionValue(code: "N", description: "No"))
 
-        let form = MetaForm(name: "test", title: "Test Form", drawType: .EntireForm)
+        let form = MFForm(name: "test", title: "Test Form", drawType: .EntireForm)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addOptionControl(name: "yesOrNo", options: MFOptions.OptionFromList(options: yn, emptyItem: nil, expandOptions: true))
@@ -138,7 +138,7 @@ final class MetaFormTests: XCTestCase {
         yn.append( MFOptionValue(code: "Y", description: "Yes"))
         yn.append( MFOptionValue(code: "N", description: "No"))
         
-        let form = MetaForm(name: "test", title: "Test Form", drawType: .EntireForm)
+        let form = MFForm(name: "test", title: "Test Form", drawType: .EntireForm)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addOptionControl(name: "yesOrNo", options: MFOptions.OptionFromList(options: yn, emptyItem: nil, expandOptions: true))
@@ -159,7 +159,7 @@ final class MetaFormTests: XCTestCase {
     }
     
     func testFieldStringFromUrl() {
-        let form = MetaForm(name: "test", title: "Test Form", drawType: .EntireForm)
+        let form = MFForm(name: "test", title: "Test Form", drawType: .EntireForm)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addOptionControl(name: "yesOrNo", options: MFOptions.OptionFromUrl(url: "https://localhost:3000/country/[countryCode]/regions", emptyItem: nil))
@@ -178,7 +178,7 @@ final class MetaFormTests: XCTestCase {
         yn.append( MFOptionValue(code: "Y", description: "Yes"))
         yn.append( MFOptionValue(code: "N", description: "No"))
         
-        let form = MetaForm(name: "test", title: "Test Form", drawType: .EntireForm)
+        let form = MFForm(name: "test", title: "Test Form", drawType: .EntireForm)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addOptionControl(name: "yesOrNo", options: MFOptions.OptionFromList(options: yn, emptyItem: nil, expandOptions: true))
