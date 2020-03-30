@@ -11,11 +11,11 @@ public struct MetaFormService {
     static let shared = MetaFormService()
     private init() { }
     
-    func getNextQuestionToDisplay(form: MFForm, rules: BusinessRules, last: Int) -> DisplayQuestions {
+    public func getNextQuestionToDisplay(form: MFForm, rules: BusinessRules, last: Int) -> DisplayQuestions {
         return getDisplayQuestions(form: form, rules: rules, last: last, direction: 1)
     }
     
-    func getPreviousQuestionToDisplay(form: MFForm, rules: BusinessRules, last: Int) -> DisplayQuestions {
+    public func getPreviousQuestionToDisplay(form: MFForm, rules: BusinessRules, last: Int) -> DisplayQuestions {
         return getDisplayQuestions(form: form, rules: rules, last: last, direction: -1)
     }
 

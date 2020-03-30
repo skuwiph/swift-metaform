@@ -11,12 +11,12 @@ public class MetaFormData {
     private var data = [String: String]()
     private var forceLowerCase = false
     
-    func getValue(_ name: String) -> String {
+    public func getValue(_ name: String) -> String {
         let fieldName = self.correctFieldName(name: name)
         return self.data[fieldName] ?? ""
     }
     
-    func setValue(_ name: String, value: String) {
+    public func setValue(_ name: String, value: String) {
         let fieldName = self.correctFieldName(name: name)
         
         let oldValue = getValue(name)
@@ -26,7 +26,7 @@ public class MetaFormData {
         NotificationCenter.default.post(name: NSNotification.Name.dataWasChanged, object: self, userInfo: [ "data" : fdc])
     }
     
-    func getValueAsDate(_ name: String) -> Date? {
+    public func getValueAsDate(_ name: String) -> Date? {
         let value = self.getValue(name)
         return self.getAsDateTime(value)
     }

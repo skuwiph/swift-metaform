@@ -13,7 +13,7 @@ public class BusinessRules {
         self.rules = [:]
     }
     
-    func addRule(name: String, matchType: RuleMatchType) -> BusinessRule {
+    public func addRule(name: String, matchType: RuleMatchType) -> BusinessRule {
         if self.rules.index(forKey: name) != nil {
             // This rule has already been added
             // TODO(Ian): throw an exception. Although
@@ -25,7 +25,7 @@ public class BusinessRules {
         return r;
     }
     
-    func evaluateRule(_ name: String, data: MetaFormData) -> Bool {
+    public func evaluateRule(_ name: String, data: MetaFormData) -> Bool {
         if let r = self.rules[name] {
             debugPrint("Evaluating rule: \(name)")
             return r.evaluate(data: data)
@@ -47,19 +47,19 @@ public class BusinessRule {
         self.parts = []
     }
     
-    func addPart(field: String, comparison: RuleComparison, value: String, evaluationType: ForceEvaluationType? = nil) -> BusinessRule {
+    public func addPart(field: String, comparison: RuleComparison, value: String, evaluationType: ForceEvaluationType? = nil) -> BusinessRule {
         let p = RulePart(fieldName: field, comparison: comparison, value: value, evaluationType: evaluationType)
         self.parts.append(p)
         return self
     }
     
-    func addRangePart(field: String, min: String, max: String, evaluationType: ForceEvaluationType? = nil) -> BusinessRule {
+    public func addRangePart(field: String, min: String, max: String, evaluationType: ForceEvaluationType? = nil) -> BusinessRule {
         let p = RulePart(fieldName: field, comparison: .Between, min: min, max: max, evaluationType: evaluationType)
         self.parts.append(p)
         return self
     }
     
-    func evaluate(data: MetaFormData) -> Bool {
+    public func evaluate(data: MetaFormData) -> Bool {
         var success = false
         
         for p in self.parts {

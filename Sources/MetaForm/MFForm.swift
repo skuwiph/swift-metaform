@@ -14,14 +14,14 @@ public class MFForm {
     
     var rules: BusinessRules?
     
-    init(name: String, title: String, drawType: MetaFormDrawType? = nil) {
+    public init(name: String, title: String, drawType: MetaFormDrawType? = nil) {
         self.name = name
         self.title = title
         self.drawType = drawType ?? .SingleQuestion
     }
     
     // Initialise the form ready for first use/display
-    func initialise() {
+    public func initialise() {
         // Find all field references and dependencies
         for q in self.questions {
             for c in q.controls {
@@ -47,11 +47,11 @@ public class MFForm {
         }
     }
     
-    func isValid(_ updateStatus: Bool = true) -> Bool {
+    public func isValid(_ updateStatus: Bool = true) -> Bool {
         return self.areQuestionsValid(self.questions, updateStatus: updateStatus)
     }
     
-    func areQuestionsValid(_ questions: [MFQuestion], updateStatus: Bool = true) -> Bool {
+    public func areQuestionsValid(_ questions: [MFQuestion], updateStatus: Bool = true) -> Bool {
         var valid = true
         
         for q in questions {
@@ -66,7 +66,7 @@ public class MFForm {
         return valid
     }
     
-    func ruleMatches(_ question: MFQuestion, rules: BusinessRules?) -> Bool {
+    public func ruleMatches(_ question: MFQuestion, rules: BusinessRules?) -> Bool {
         if self.drawType == .SingleQuestion || question.ruleToMatch == nil || rules == nil {
             return true
         }
@@ -74,7 +74,7 @@ public class MFForm {
         return rules!.evaluateRule(question.ruleToMatch!, data: self.data)
     }
     
-    func determineQuestionDisplay(question: MFQuestion, dependencies: [String]?) {
+    public func determineQuestionDisplay(question: MFQuestion, dependencies: [String]?) {
         if dependencies == nil {
             return
         }
@@ -92,22 +92,22 @@ public class MFForm {
         }
     }
     
-    func getValue(_ name: String) -> String {
+    public func getValue(_ name: String) -> String {
         return self.data.getValue(name)
     }
     
-    func setValue(_ name: String, value: String) {
+    public func setValue(_ name: String, value: String) {
         self.data.setValue(name, value: value)
     }
     
-    func addQuestion(name: String, caption: String) -> MFQuestion {
+    public func addQuestion(name: String, caption: String) -> MFQuestion {
         let q = MFQuestion(sectionId: 1, name: name, caption: caption)
         self.questions.append(q)
         
         return q;
     }
     
-    func getQuestion(name: String) -> MFQuestion? {
+    public func getQuestion(name: String) -> MFQuestion? {
         if let q = self.questions.first(where: { $0.name == name}) {
             return q
         }
@@ -201,20 +201,20 @@ public class MFQuestion {
         return valid
     }
     
-    func addTextControl(name: String, textType: MetaFormTextType, maxLength: Int? = 0, placeholder: String? = "") -> MFTextControl {
+    public func addTextControl(name: String, textType: MetaFormTextType, maxLength: Int? = 0, placeholder: String? = "") -> MFTextControl {
         let t = MFTextControl(parent: self, name: name, textType: textType, maxLength: maxLength, placeholder: placeholder)
         self.pushControl(control: t)
         return t
     }
     
-    func addDateControl(name: String, dateType: MetaFormDateType) -> MFDateControl {
+    public func addDateControl(name: String, dateType: MetaFormDateType) -> MFDateControl {
         let c = MFDateControl(parent: self, name: name, dateType: dateType)
         self.pushControl(control: c)
         
         return c
     }
     
-    func addTimeControl(name: String, minuteStep: UInt8?, hourStart: UInt8?, hourEnd: UInt8?) -> MFTimeControl {
+    public func addTimeControl(name: String, minuteStep: UInt8?, hourStart: UInt8?, hourEnd: UInt8?) -> MFTimeControl {
         let c = MFTimeControl(parent: self, name: name, minuteStep: 15, hourStart: 8, hourEnd: 20)
         
         self.pushControl(control: c)
@@ -222,14 +222,14 @@ public class MFQuestion {
         return c
     }
     
-    func addDateTimeControl(name: String, minuteStep: UInt8?, hourStart: UInt8?, hourEnd: UInt8?) -> MFDateTimeControl {
+    public func addDateTimeControl(name: String, minuteStep: UInt8?, hourStart: UInt8?, hourEnd: UInt8?) -> MFDateTimeControl {
         let c = MFDateTimeControl(parent: self, name: name, minuteStep: 15, hourStart: 8, hourEnd: 20)
         
         self.pushControl(control: c)
         return c
     }
     
-    func addOptionControl(name: String, options: MFOptions, layout: ControlLayoutStyle = ControlLayoutStyle.Vertical) -> MFOptionControl {
+    public func addOptionControl(name: String, options: MFOptions, layout: ControlLayoutStyle = ControlLayoutStyle.Vertical) -> MFOptionControl {
         let c = MFOptionControl(parent: self, name: name, controlType: MetaFormControlType.Option, options: options, optionLayout: layout)
         c.checkDependencies()
         self.pushControl(control: c)
@@ -237,7 +237,7 @@ public class MFQuestion {
         return c
     }
     
-    func addOptionMultiControl(name: String, options: MFOptions, layout: ControlLayoutStyle = ControlLayoutStyle.Vertical) -> MFOptionMultiControl {
+    public func addOptionMultiControl(name: String, options: MFOptions, layout: ControlLayoutStyle = ControlLayoutStyle.Vertical) -> MFOptionMultiControl {
         let c = MFOptionMultiControl(parent: self, name: name, controlType: MetaFormControlType.OptionMulti, options: options, optionLayout: layout)
         c.checkDependencies()
 
@@ -246,30 +246,30 @@ public class MFQuestion {
         return c
     }
     
-    func addTelephoneAndIddCode(name: String, maxLength: Int? = nil, placeholder: String? = nil) -> MFTelephoneAndIddControl {
+    public func addTelephoneAndIddCode(name: String, maxLength: Int? = nil, placeholder: String? = nil) -> MFTelephoneAndIddControl {
         let c = MFTelephoneAndIddControl(parent: self, name: name, maxLength: maxLength, placeholder: placeholder)
         self.pushControl(control: c)
         return c
     }
     
-    func addToggleControl(name: String, text: String? = nil) -> MFToggleControl {
+    public func addToggleControl(name: String, text: String? = nil) -> MFToggleControl {
         let c = MFToggleControl(parent: self, name: name, text: text)
         self.pushControl(control: c)
         return c
     }
     
-    func addSliderControl(name: String, text: String? = nil, min: Int, max: Int, step: Int) -> MFSliderControl {
+    public func addSliderControl(name: String, text: String? = nil, min: Int, max: Int, step: Int) -> MFSliderControl {
         let c = MFSliderControl(parent: self, name: name, min: min, max: max, step: step, text: text)
         self.pushControl(control: c)
         return c
     }
     
-    func setSection(_ id: Int) -> MFQuestion {
+    public func setSection(_ id: Int) -> MFQuestion {
         self.sectionId = id
         return self
     }
     
-    func setDisplayRule(_ rule: String) -> MFQuestion {
+    public func setDisplayRule(_ rule: String) -> MFQuestion {
         self.ruleToMatch = rule
         return self
     }
