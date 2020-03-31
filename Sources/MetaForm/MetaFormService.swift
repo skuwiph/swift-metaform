@@ -8,7 +8,7 @@
 import Foundation
 
 public struct MetaFormService {
-    static let shared = MetaFormService()
+    public static let shared = MetaFormService()
     private init() { }
     
     public func getNextQuestionToDisplay(form: MFForm, rules: BusinessRules, last: Int) -> DisplayQuestions {
@@ -97,7 +97,7 @@ public struct MetaFormService {
         var outOfBounds = false
         var current = start + direction
         
-        if current < 0 || current > questionCount {
+        if current < 0 || current >= questionCount {
             return boundary
         }
         
@@ -171,9 +171,9 @@ public struct MetaFormService {
 }
 
 public struct DisplayQuestions {
-    let questions: [MFQuestion]
-    let atEnd: Bool
-    let atStart: Bool
-    let numberOfControls: Int
-    let lastItem: Int
+    public let questions: [MFQuestion]
+    public let atEnd: Bool
+    public let atStart: Bool
+    public let numberOfControls: Int
+    public let lastItem: Int
 }

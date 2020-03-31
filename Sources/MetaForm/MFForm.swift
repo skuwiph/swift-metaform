@@ -1,15 +1,15 @@
 import Foundation
 
 public class MFForm {
-    var name: String
-    var title: String
+    public var name: String
+    public var title: String
     var version = 1
     var dateModified = Date()
     var dataSource: String?
     var drawType: MetaFormDrawType = .SingleQuestion
     var allowSaves: Bool = false
-    var sections: [MFSection] = []
-    var questions: [MFQuestion] = []
+    public var sections: [MFSection] = []
+    public var questions: [MFQuestion] = []
     var data = MetaFormData()
     
     var rules: BusinessRules?
@@ -45,6 +45,10 @@ public class MFForm {
                 self.determineQuestionDisplay(question: q, dependencies: c.dependencies)
             }
         }
+    }
+    
+    public func setRules(_ rules: BusinessRules) {
+        self.rules = rules
     }
     
     public func isValid(_ updateStatus: Bool = true) -> Bool {
@@ -172,18 +176,18 @@ public struct MFSection {
 }
 
 public class MFQuestion {
-    var sectionId: Int
-    var name: String
-    var caption: String?
-    var captionFootnote: String?
-    var ruleToMatch: String?
-    var controlLayout: ControlLayoutStyle = ControlLayoutStyle.Vertical
-    var controls: [MFControl] = []
-    var readonly = false
-    var available = true
-    var canBeDisplayed: () -> Bool = {return true}
+    public var sectionId: Int
+    public var name: String
+    public var caption: String?
+    public var captionFootnote: String?
+    public var ruleToMatch: String?
+    public var controlLayout: ControlLayoutStyle = ControlLayoutStyle.Vertical
+    public var controls: [MFControl] = []
+    public var readonly = false
+    public var available = true
+    public var canBeDisplayed: () -> Bool = {return true}
     
-    init(sectionId: Int, name: String, caption: String?) {
+    public init(sectionId: Int, name: String, caption: String?) {
         self.sectionId = sectionId
         self.name = name
         self.caption = caption
@@ -271,6 +275,11 @@ public class MFQuestion {
     
     public func setDisplayRule(_ rule: String) -> MFQuestion {
         self.ruleToMatch = rule
+        return self
+    }
+    
+    public func setFootnote(_ note: String) -> MFQuestion {
+        self.captionFootnote = note
         return self
     }
     

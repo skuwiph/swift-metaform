@@ -9,7 +9,7 @@ import Foundation
 public class BusinessRules {
     var rules: [String: BusinessRule] = [:]
     
-    init() {
+    public init() {
         self.rules = [:]
     }
     
