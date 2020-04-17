@@ -164,7 +164,7 @@ public class MFOptionControlBase: MFControl {
         super.init(parent: parent, controlType: controlType, name: name )
     }
     
-    var hasOptionList: Bool
+    public var hasOptionList: Bool
     {
         if let optionsList = self.options.list {
             return optionsList.count > 0
@@ -176,11 +176,11 @@ public class MFOptionControlBase: MFControl {
         return self.options.optionSource != nil && self.options.optionSource?.url.count ?? 0 > 0
     }
     
-    var optionList: [MFOptionValue] {
+    public var optionList: [MFOptionValue] {
         return self.options.list ?? []
     }
     
-    var optionUrl: String {
+    public var optionUrl: String {
         return self.options.optionSource!.url
     }
     
@@ -474,11 +474,13 @@ public struct MFOptions {
 
 public struct MFOptionSource {
     public var url: String
+    public init() {}
 }
 
 public struct MFOptionValue {
     public var code: String
     public var description: String
+    public init() {}
 }
 
 public class MFTelephoneAndIddControl: MFControl {
@@ -504,8 +506,9 @@ public class MFTelephoneAndIddControl: MFControl {
 }
 
 public struct IddCode {
-    var code: String
-    var name: String
+    public var code: String
+    public var name: String
+    public init() {}
 }
 
 public class MFToggleControl: MFControl {
