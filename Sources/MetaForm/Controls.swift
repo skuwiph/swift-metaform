@@ -472,7 +472,7 @@ public struct MFOptions {
     }    
 }
 
-struct MFOptionSource {
+public struct MFOptionSource {
     var url: String
 }
 
