@@ -458,12 +458,12 @@ public struct MFOptions {
     var emptyItem: String?
     var expandOptions: Bool = true
     
-    static func OptionFromList(options: [MFOptionValue], emptyItem: String?, expandOptions: Bool = false) -> MFOptions{
+    public static func OptionFromList(options: [MFOptionValue], emptyItem: String?, expandOptions: Bool = false) -> MFOptions{
         let o = MFOptions(list: options, emptyItem: emptyItem, expandOptions: expandOptions)
         return o;
     }
 
-    static func OptionFromUrl(url: String, emptyItem: String?, expandOptions: Bool = false) -> MFOptions {
+    public static func OptionFromUrl(url: String, emptyItem: String?, expandOptions: Bool = false) -> MFOptions {
         let os = MFOptionSource(url: url)
         
         let o = MFOptions(list: nil, optionSource: os, emptyItem: emptyItem, expandOptions: expandOptions)
