@@ -473,12 +473,12 @@ public struct MFOptions {
 }
 
 public struct MFOptionSource {
-    var url: String
+    public var url: String
 }
 
 public struct MFOptionValue {
-    var code: String
-    var description: String
+    public var code: String
+    public var description: String
 }
 
 public class MFTelephoneAndIddControl: MFControl {
