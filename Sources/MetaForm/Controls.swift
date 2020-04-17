@@ -474,13 +474,16 @@ public struct MFOptions {
 
 public struct MFOptionSource {
     public var url: String
-    public init() {}
+    public init(url: String) { self.url = url }
 }
 
 public struct MFOptionValue {
     public var code: String
     public var description: String
-    public init() {}
+    public init(code: String, description: String) {
+        self.code = code
+        self.description = description
+    }
 }
 
 public class MFTelephoneAndIddControl: MFControl {
@@ -508,7 +511,10 @@ public class MFTelephoneAndIddControl: MFControl {
 public struct IddCode {
     public var code: String
     public var name: String
-    public init() {}
+    public init(code: String, name: String) {
+        self.code = code
+        self.name = name
+    }
 }
 
 public class MFToggleControl: MFControl {
