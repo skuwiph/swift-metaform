@@ -151,7 +151,7 @@ public class MFTextControl: MFControl {
         self.textType = textType
         self.maxLength = maxLength ?? 0
         self.placeholder = placeholder
-        super.init(parent: parent, controlType: .Html, name: name)
+        super.init(parent: parent, controlType: .Text, name: name)
     }
 }
 
