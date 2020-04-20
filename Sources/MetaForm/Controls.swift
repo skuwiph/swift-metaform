@@ -7,7 +7,8 @@
 
 import Foundation
 
-public class MFControl {
+public class MFControl: Identifiable {
+    public var id = UUID()
     public var controlType: MetaFormControlType
     public var controlId: String
     public var name: String
