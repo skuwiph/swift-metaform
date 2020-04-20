@@ -8,15 +8,15 @@
 import Foundation
 
 public class MFControl {
-    var controlType: MetaFormControlType
-    var controlId: String
-    var name: String
-    var autoComplete: String?
+    public var controlType: MetaFormControlType
+    public var controlId: String
+    public var name: String
+    public var autoComplete: String?
     
     // Optional label for certain controls
-    var label: String?
+    public var label: String?
     
-    var validators: [MFValidator]?
+    public var validators: [MFValidator]?
     var validatorsAsync: [MFValidatorAsync]?
     
     // Internal usage
@@ -24,10 +24,10 @@ public class MFControl {
     var references: [String] = []
     var dependencies: [String]?
     
-    var readonly = false
+    public var readonly = false
     
-    var inError = false
-    var errorMessage: String?
+    public var inError = false
+    public var errorMessage: String?
     
     init(parent: MFQuestion, controlType: MetaFormControlType, name: String) {
         self.name = name
