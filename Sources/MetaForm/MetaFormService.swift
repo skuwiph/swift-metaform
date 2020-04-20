@@ -108,7 +108,7 @@ public struct MetaFormService {
                 break
             } else {
                 current += direction
-                outOfBounds = current < 0 || current > questionCount
+                outOfBounds = current < 0 || current >= questionCount
             }
         } while !found && !outOfBounds
         
@@ -123,7 +123,7 @@ public struct MetaFormService {
         var outOfBounds = false
         var current = start + direction
         
-        if current < 0 || current > sectionCount {
+        if current < 0 || current >= sectionCount {
             return boundary
         }
         
@@ -134,7 +134,7 @@ public struct MetaFormService {
                 break
             } else {
                 current += direction
-                outOfBounds = current < 0 || current > sectionCount
+                outOfBounds = current < 0 || current >= sectionCount
             }
         } while !found && !outOfBounds
         
