@@ -130,7 +130,7 @@ public class MFLabel: MFControl {
 }
 
 public class MFHtmlTextControl: MFControl {
-    var html: String;
+    public var html: String;
 
     init(parent: MFQuestion, name: String, html: String) {
         self.html = html
@@ -143,9 +143,9 @@ public class MFHtmlTextControl: MFControl {
 }
 
 public class MFTextControl: MFControl {
-    var textType: MetaFormTextType;
-    var maxLength: Int
-    var placeholder: String?
+    public var textType: MetaFormTextType;
+    public var maxLength: Int
+    public var placeholder: String?
 
     init(parent: MFQuestion, name: String, textType: MetaFormTextType, maxLength: Int? = 0, placeholder: String?) {
         self.textType = textType
@@ -156,8 +156,8 @@ public class MFTextControl: MFControl {
 }
 
 public class MFOptionControlBase: MFControl {
-    var options: MFOptions
-    var optionLayout: ControlLayoutStyle = .Vertical
+    public var options: MFOptions
+    public var optionLayout: ControlLayoutStyle = .Vertical
 
     init(parent: MFQuestion, name: String, controlType: MetaFormControlType, options: MFOptions, optionLayout: ControlLayoutStyle) {
         self.options = options
@@ -275,7 +275,7 @@ protocol MFPDate {
 }
 
 public class MFDateControl: MFControl, MFPDate {
-    var dateType: MetaFormDateType
+    public var dateType: MetaFormDateType
 
     init(parent: MFQuestion, name: String, dateType: MetaFormDateType) {
         self.dateType = dateType
@@ -454,10 +454,10 @@ public class MFDateTimeControl: MFControl, MFPTime, MFPDate {
 }
 
 public struct MFOptions {
-    var list: [MFOptionValue]?
-    var optionSource: MFOptionSource?
-    var emptyItem: String?
-    var expandOptions: Bool = true
+    public var list: [MFOptionValue]?
+    public var optionSource: MFOptionSource?
+    public var emptyItem: String?
+    public var expandOptions: Bool = true
     
     public static func OptionFromList(options: [MFOptionValue], emptyItem: String?, expandOptions: Bool = false) -> MFOptions{
         let o = MFOptions(list: options, emptyItem: emptyItem, expandOptions: expandOptions)
@@ -488,9 +488,9 @@ public struct MFOptionValue {
 }
 
 public class MFTelephoneAndIddControl: MFControl {
-    var maxLength: Int = 0
-    var placeholder: String?
-    var iddList: [IddCode] = []
+    public var maxLength: Int = 0
+    public var placeholder: String?
+    public var iddList: [IddCode] = []
     
     init(parent: MFQuestion, name: String, maxLength: Int? = 0, placeholder: String? = "") {
         self.placeholder = placeholder
@@ -519,7 +519,7 @@ public struct IddCode {
 }
 
 public class MFToggleControl: MFControl {
-    var text: String?
+    public var text: String?
     init(parent: MFQuestion, name: String, text: String? ) {
         self.text = text
         super.init(parent: parent, controlType: .Toggle, name: name)
@@ -527,10 +527,10 @@ public class MFToggleControl: MFControl {
 }
 
 public class MFSliderControl: MFControl {
-    var text: String
-    var min: Int
-    var max: Int
-    var step: Int
+    public var text: String
+    public var min: Int
+    public var max: Int
+    public var step: Int
     
     init(parent: MFQuestion, name: String, min: Int, max: Int, step: Int, text: String?) {
         self.text = text ?? ""
