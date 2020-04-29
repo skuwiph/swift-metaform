@@ -10,7 +10,7 @@ public class MFForm {
     var allowSaves: Bool = false
     public var sections: [MFSection] = []
     public var questions: [MFQuestion] = []
-    var data = MetaFormData()
+    var data = FormData()
     
     var rules: BusinessRules?
     

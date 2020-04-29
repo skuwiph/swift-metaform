@@ -12,7 +12,7 @@ final class BusinessRuleTests: XCTestCase {
     
     func testRuleEqualityString() {
         let r = BusinessRules()
-        let f = MetaFormData()
+        let f = FormData()
         
         _ = r
             .addRule(name: "r1", matchType: .MatchAny)
@@ -25,7 +25,7 @@ final class BusinessRuleTests: XCTestCase {
     
     func testRuleEqualityNumber() {
         let r = BusinessRules()
-        let f = MetaFormData()
+        let f = FormData()
         
         _ = r
             .addRule(name: "r1", matchType: .MatchAny)
@@ -38,7 +38,7 @@ final class BusinessRuleTests: XCTestCase {
     
     func testRuleEqualityDate() {
         let r = BusinessRules()
-        let f = MetaFormData()
+        let f = FormData()
         
         _ = r
             .addRule(name: "r1", matchType: .MatchAny)
@@ -51,7 +51,7 @@ final class BusinessRuleTests: XCTestCase {
     
     func testRuleEqualityBool() {
         let r = BusinessRules()
-        let f = MetaFormData()
+        let f = FormData()
         
         _ = r
             .addRule(name: "r1", matchType: .MatchAny)
@@ -64,7 +64,7 @@ final class BusinessRuleTests: XCTestCase {
     
     func testRuleInequalityString() {
         let r = BusinessRules()
-        let f = MetaFormData()
+        let f = FormData()
         
         _ = r
             .addRule(name: "r1", matchType: .MatchAny)
@@ -77,7 +77,7 @@ final class BusinessRuleTests: XCTestCase {
      
     func testRuleInequalityNumber() {
         let r = BusinessRules()
-        let f = MetaFormData()
+        let f = FormData()
         
         _ = r
             .addRule(name: "r1", matchType: .MatchAny)
@@ -90,7 +90,7 @@ final class BusinessRuleTests: XCTestCase {
     
     func testRuleInequalityDate() {
         let r = BusinessRules()
-        let f = MetaFormData()
+        let f = FormData()
         
         _ = r
             .addRule(name: "r1", matchType: .MatchAny)
@@ -103,7 +103,7 @@ final class BusinessRuleTests: XCTestCase {
     
     func testRuleInequalityBool() {
         let r = BusinessRules()
-        let f = MetaFormData()
+        let f = FormData()
         
         _ = r
             .addRule(name: "r1", matchType: .MatchAny)

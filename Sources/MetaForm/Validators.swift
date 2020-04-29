@@ -288,7 +288,7 @@ public class MFDateMustBeAfterValidator: MFValidator {
 
         if !answerToCheck.isEmpty {
             let date = form.data.getValueAsDate(control.name);
-            let minDate = form.data.convertValueToDate(matchingValue);
+            let minDate = form.data.convertValueToDate(matchingValue, timeValue: nil);
 
             if date == nil || minDate == nil {
                 valid = false
