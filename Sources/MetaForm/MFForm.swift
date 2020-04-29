@@ -10,14 +10,15 @@ public class MFForm {
     var allowSaves: Bool = false
     public var sections: [MFSection] = []
     public var questions: [MFQuestion] = []
-    var data = FormData()
-    
+
+    var data: MetaFormData
     var rules: BusinessRules?
     
-    public init(name: String, title: String, drawType: MetaFormDrawType? = nil) {
+    public init(name: String, title: String, data: MetaFormData, drawType: MetaFormDrawType? = nil) {
         self.name = name
         self.title = title
         self.drawType = drawType ?? .SingleQuestion
+        self.data = data
     }
     
     // Initialise the form ready for first use/display
@@ -45,6 +46,10 @@ public class MFForm {
                 self.determineQuestionDisplay(question: q, dependencies: c.dependencies)
             }
         }
+    }
+    
+    public func setData(_ data: MetaFormData) {
+        self.data = data
     }
     
     public func setRules(_ rules: BusinessRules) {
@@ -136,8 +141,8 @@ public class MFForm {
         return nil
     }
     
-    public static func createSimpleFormWith(name: String, title: String) -> MFForm {
-        let f = MFForm(name: name, title: title, drawType: .SingleQuestion)
+    public static func createSimpleFormWith(name: String, title: String, data: MetaFormData) -> MFForm {
+        let f = MFForm(name: name, title: title, data: data, drawType: .SingleQuestion)
         return f
     }
     

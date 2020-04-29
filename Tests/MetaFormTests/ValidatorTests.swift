@@ -11,8 +11,14 @@ import XCTest
 
 final class ValidatorTests: XCTestCase {
     
+    var data = FormData()
+    
+    override func setUp() {
+        data = FormData()
+    }
+    
     func testRequired() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTextControl(name: "t1", textType: MetaFormTextType.SingleLine)
@@ -26,7 +32,7 @@ final class ValidatorTests: XCTestCase {
     }
     
     func testAnswerMustMatchSimple() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTextControl(name: "t1", textType: MetaFormTextType.SingleLine)
@@ -40,7 +46,7 @@ final class ValidatorTests: XCTestCase {
     }
 
     func testAnswerMustMatchField() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTextControl(name: "t1", textType: MetaFormTextType.SingleLine)
@@ -63,7 +69,7 @@ final class ValidatorTests: XCTestCase {
     }
     
     func testEmail() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTextControl(name: "t1", textType: MetaFormTextType.Email)
@@ -89,7 +95,7 @@ final class ValidatorTests: XCTestCase {
     }
     
     func testDate() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTextControl(name: "t1", textType: MetaFormTextType.SingleLine)
@@ -112,7 +118,7 @@ final class ValidatorTests: XCTestCase {
     }
     
     func testDateTimes() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTextControl(name: "t1", textType: MetaFormTextType.SingleLine)
@@ -135,7 +141,7 @@ final class ValidatorTests: XCTestCase {
     }
     
     func testDateAfter() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTextControl(name: "t1", textType: MetaFormTextType.SingleLine)
@@ -158,7 +164,7 @@ final class ValidatorTests: XCTestCase {
     }
     
     func testDateBefore() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTextControl(name: "t1", textType: MetaFormTextType.SingleLine)
@@ -181,7 +187,7 @@ final class ValidatorTests: XCTestCase {
     }
         
     func testDateBetween() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addDateControl(name: "t1", dateType: .Full)
@@ -204,7 +210,7 @@ final class ValidatorTests: XCTestCase {
     }
     
     func testNumericBetween() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTextControl(name: "t1", textType: .Numeric)
@@ -227,7 +233,7 @@ final class ValidatorTests: XCTestCase {
     }
     
     func testWordCount() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTextControl(name: "t1", textType: MetaFormTextType.SingleLine)

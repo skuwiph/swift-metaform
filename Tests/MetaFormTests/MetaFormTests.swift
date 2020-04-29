@@ -3,8 +3,14 @@ import XCTest
 
 final class MetaFormTests: XCTestCase {
     
+    var data = FormData()
+    
+    override func setUp() {
+        data = FormData()
+    }
+    
     func testDateExtraction() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addDateControl(name: "d1", dateType: MetaFormDateType.Full)
@@ -29,7 +35,7 @@ final class MetaFormTests: XCTestCase {
     }
     
     func testTimeExtraction() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTimeControl(name: "t1", minuteStep: 15, hourStart: 8, hourEnd: 20)
@@ -55,7 +61,7 @@ final class MetaFormTests: XCTestCase {
     }
     
     func testTimeLists() {
-        let form = MFForm(name: "test", title: "Test Form")
+        let form = MFForm(name: "test", title: "Test Form", data: data)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addTimeControl(name: "t1", minuteStep: 15, hourStart: 8, hourEnd: 20)
@@ -107,7 +113,7 @@ final class MetaFormTests: XCTestCase {
         yn.append( MFOptionValue(code: "Y", description: "Yes"))
         yn.append( MFOptionValue(code: "N", description: "No"))
 
-        let form = MFForm(name: "test", title: "Test Form", drawType: .EntireForm)
+        let form = MFForm(name: "test", title: "Test Form", data: data, drawType: .EntireForm)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addOptionControl(name: "yesOrNo", options: MFOptions.OptionFromList(options: yn, emptyItem: nil, expandOptions: true))
@@ -138,7 +144,7 @@ final class MetaFormTests: XCTestCase {
         yn.append( MFOptionValue(code: "Y", description: "Yes"))
         yn.append( MFOptionValue(code: "N", description: "No"))
         
-        let form = MFForm(name: "test", title: "Test Form", drawType: .EntireForm)
+        let form = MFForm(name: "test", title: "Test Form", data: data, drawType: .EntireForm)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addOptionControl(name: "yesOrNo", options: MFOptions.OptionFromList(options: yn, emptyItem: nil, expandOptions: true))
@@ -159,7 +165,7 @@ final class MetaFormTests: XCTestCase {
     }
     
     func testFieldStringFromUrl() {
-        let form = MFForm(name: "test", title: "Test Form", drawType: .EntireForm)
+        let form = MFForm(name: "test", title: "Test Form", data: data, drawType: .EntireForm)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addOptionControl(name: "yesOrNo", options: MFOptions.OptionFromUrl(url: "https://localhost:3000/country/[countryCode]/regions", emptyItem: nil))
@@ -178,7 +184,7 @@ final class MetaFormTests: XCTestCase {
         yn.append( MFOptionValue(code: "Y", description: "Yes"))
         yn.append( MFOptionValue(code: "N", description: "No"))
         
-        let form = MFForm(name: "test", title: "Test Form", drawType: .EntireForm)
+        let form = MFForm(name: "test", title: "Test Form", data: data, drawType: .EntireForm)
         _ = form
             .addQuestion(name: "q1", caption: "Test Question")
             .addOptionControl(name: "yesOrNo", options: MFOptions.OptionFromList(options: yn, emptyItem: nil, expandOptions: true))
