@@ -56,6 +56,23 @@ public class MFForm {
         self.rules = rules
     }
     
+    public func checkValidity(_ fieldName: String) -> (isValid: Bool, message: String?, references: [String]?) {
+        var valid = true
+        var msg: String?
+        var referencedFields: [String]?
+        
+        if let control = self.getControlBy(name: fieldName) {
+            referencedFields = control.references
+
+            if !control.isValid(form: self) {
+                valid = false
+                msg = control.errorMessage
+            }
+        }
+        
+        return (isValid: valid, message: msg, references: referencedFields)
+    }
+    
     public func isValid(_ updateStatus: Bool = true) -> Bool {
         return self.areQuestionsValid(self.questions, updateStatus: updateStatus)
     }
