@@ -10,6 +10,7 @@ import SwiftUI
 import Combine
 
 @available(OSX 10.15, *)
+@available(iOS 13, *)
 public class MetaFormState: ObservableObject {
     @Published var data: Dictionary<String, String> = [:]
     @Published var displayQuestions: [MFQuestion] = []
