@@ -88,7 +88,7 @@ public class MetaFormState: ObservableObject {
         })
     }
     
-    func validate(_ name: String) {
+    public func validate(_ name: String) {
         let result = form.checkValidity(name)
         self.validity[name] = result.isValid
         self.errors[name] = result.message
