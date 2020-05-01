@@ -12,18 +12,18 @@ import Combine
 @available(OSX 10.15, *)
 @available(iOS 13, *)
 public class MetaFormState: ObservableObject {
-    @Published var data: Dictionary<String, String> = [:]
-    @Published var displayQuestions: [MFQuestion] = []
+    @Published public var data: Dictionary<String, String> = [:]
+    @Published public var displayQuestions: [MFQuestion] = []
     
-    @Published var validity: Dictionary<String, Bool> = [:]
-    @Published var errors: Dictionary<String, String> = [:]
+    @Published public var validity: Dictionary<String, Bool> = [:]
+    @Published public var errors: Dictionary<String, String> = [:]
     
+    @Published public var atStartOfQuestions = false
+    @Published public var atEndOfQuestions = false
+
     var form: MFForm
     var rules: BusinessRules
     var lastDisplayedItem = -1
-    
-    public var atStartOfQuestions = false
-    public var atEndOfQuestions = false
     
 //    var controls: Dictionary<String, MFControl> = [:]
     
