@@ -76,6 +76,8 @@ public class FormData: MetaFormData {
     private var data = [String: String]()
     private var forceLowerCase = false
     
+    public init() {}
+    
     public func getValue(_ name: String) -> String {
         let fieldName = self.correctFieldName(name: name)
         return self.data[fieldName] ?? ""
