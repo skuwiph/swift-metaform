@@ -27,7 +27,7 @@ public class MetaFormState: ObservableObject {
     
 //    var controls: Dictionary<String, MFControl> = [:]
         
-    var inError: Bool {
+    public var inError: Bool {
         get {
             let actualErrors = validity.filter { key, value in  return !value }
             return actualErrors.count > 0
