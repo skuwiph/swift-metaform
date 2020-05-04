@@ -26,6 +26,13 @@ public class MetaFormState: ObservableObject {
     var lastDisplayedItem = -1
     
 //    var controls: Dictionary<String, MFControl> = [:]
+        
+    var inError: Bool {
+        get {
+            let actualErrors = validity.filter { key, value in  return !value }
+            return actualErrors.count > 0
+        }
+    }
     
     public init(form: MFForm, rules: BusinessRules?) {
         self.form = form
