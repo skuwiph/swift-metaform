@@ -36,11 +36,11 @@ public class MetaFormState: ObservableObject {
         var dq: DisplayQuestions;
         
         if forwards {
-         dq = MetaFormService.shared.getNextQuestionToDisplay(form: self.form, rules: self.rules, last: lastDisplayedItem)
+            dq = MetaFormService.shared.getNextQuestionToDisplay(form: self.form, rules: self.rules, last: lastDisplayedItem)
         } else {
             dq = MetaFormService.shared.getPreviousQuestionToDisplay(form: self.form, rules: self.rules, last: lastDisplayedItem)
         }
-                
+        
         self.atStartOfQuestions = dq.atStart
         self.atEndOfQuestions = dq.atEnd
         self.lastDisplayedItem = dq.lastItem
@@ -52,11 +52,16 @@ public class MetaFormState: ObservableObject {
         self.data.removeAll()
         self.errors.removeAll()
         self.validity.removeAll()
+            
+        if self.displayQuestions.count > 0 {
+            debugPrint("Got new questions? \(self.displayQuestions[0].caption ?? "No Caption Provided")")
+        }
         
         // So, we have some questions! But we need to get the data
         // items out for each question and set up the control status values
         for q in dq.questions {
             for c in q.controls {
+                debugPrint("Setting value and validity for \(c.name)")
                 data[c.name] = self.form.getValue(c.name)
                 let r = form.checkValidity(c.name)
                 validity[c.name] = r.isValid
