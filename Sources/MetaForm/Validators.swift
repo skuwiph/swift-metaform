@@ -34,7 +34,7 @@ public class MFValidator {
             if self.referencesField == nil {
                 self.referencesField = []
             }
-            
+            debugPrint("\(value) references \(check.fieldName!)")
             self.referencesField?.append(check.fieldName!)
         }
     }
