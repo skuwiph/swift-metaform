@@ -101,17 +101,21 @@ public class MetaFormState: ObservableObject {
     }
     
     public func validate(_ name: String) {
-        debugPrint("Checking validity on \(name)")
         
         let result = form.checkValidity(name)
+        debugPrint("Checking validity on \(name): \(result)")
+
         self.validity[name] = result.isValid
         self.errors[name] = result.message
         
         // Find related?
         if let references = result.references {
+            debugPrint("Got references \(references)")
             for r in references {
                 validate(r);
             }
+        } else {
+            debugPrint("\(name) has no referenced fields")
         }
     }
 }
