@@ -101,8 +101,17 @@ public class MetaFormState: ObservableObject {
     }
     
     public func validate(_ name: String) {
+        debugPrint("Checking validity on \(name)")
+        
         let result = form.checkValidity(name)
         self.validity[name] = result.isValid
         self.errors[name] = result.message
+        
+        // Find related?
+        if let references = result.references {
+            for r in references {
+                validate(r);
+            }
+        }
     }
 }
